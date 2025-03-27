@@ -11,6 +11,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Datos de ejemplo
     let taxiData = [
         {
+            id: 'TX-130',
+            model: 'Toyota Corolla',
+            year: 2022,
+            domain: 'AB130CD',
+            status: 'danger',
+            maintenance: {
+                'aceite': {
+                    title: 'Aceite y Filtros',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 5500,
+                    nextServiceKm: 5000,
+                    type: 'danger'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/02/2024',
+                    kmSinceLastService: 16000,
+                    nextServiceKm: 15000,
+                    type: 'danger'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/01/2024',
+                    kmSinceLastService: 21000,
+                    nextServiceKm: 20000,
+                    type: 'danger'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '01/01/2024',
+                    kmSinceLastService: 52000,
+                    nextServiceKm: 50000,
+                    type: 'danger'
+                }
+            }
+        },
+        {
             id: 'TX-1001',
             model: 'Toyota Corolla',
             year: 2023,
@@ -177,20 +214,72 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
+        // Calcular el estado actual del taxi
+        const currentStatus = calculateMaintenanceStatus(taxi.maintenance);
+        taxi.status = currentStatus;
+
         card.innerHTML = `
             <div class="taxi-number">${taxi.id}</div>
             <div class="taxi-info">
-                <div class="taxi-model">${taxi.model}</div>
-                <div class="taxi-details">${taxi.year} | ${taxi.domain}</div>
+                <div class="taxi-model editable" data-field="model">${taxi.model}</div>
+                <div class="taxi-details">
+                    <span class="editable" data-field="year">${taxi.year}</span> | 
+                    <span class="editable" data-field="domain">${taxi.domain}</span>
+                </div>
             </div>
-            <span class="taxi-status status-${taxi.status}">${getStatusText(taxi.status)}</span>
+            <span class="taxi-status status-${currentStatus}">${getStatusText(currentStatus)}</span>
             <button class="edit-btn">✎</button>
             <button class="delete-btn">×</button>
         `;
+
+        // Hacer los campos editables
+        const editableFields = card.querySelectorAll('.editable');
+        editableFields.forEach(field => {
+            field.addEventListener('dblclick', function(e) {
+                e.stopPropagation(); // Evitar que se abra el panel al editar
+                if (!this.isContentEditable) {
+                    this.contentEditable = true;
+                    this.classList.add('editing');
+                    this.focus();
+                    
+                    const range = document.createRange();
+                    range.selectNodeContents(this);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    
+                    const originalValue = this.textContent;
+                    
+                    const handleSave = () => {
+                        this.contentEditable = false;
+                        this.classList.remove('editing');
+                        const fieldName = this.dataset.field;
+                        const newValue = this.textContent.trim();
+                        if (newValue !== originalValue) {
+                            saveChanges(taxi, fieldName, newValue);
+                        }
+                    };
+                    
+                    this.addEventListener('blur', handleSave, { once: true });
+                    this.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.blur();
+                        }
+                        if (e.key === 'Escape') {
+                            this.textContent = originalValue;
+                            this.blur();
+                        }
+                    });
+                }
+            });
+        });
         
         // Evento para mostrar detalles
         card.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('edit-btn')) {
+            if (!e.target.classList.contains('delete-btn') && 
+                !e.target.classList.contains('edit-btn') && 
+                !e.target.classList.contains('editable')) {
                 showTaxiDetails(taxi);
             }
         });
@@ -210,6 +299,141 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         return card;
+    }
+
+    // Función para actualizar la tarjeta de taxi
+    function updateTaxiCard(taxi) {
+        const card = document.querySelector(`[data-taxi-id="${taxi.id}"]`);
+        if (card) {
+            const maintenanceStatus = calculateMaintenanceStatus(taxi.maintenance);
+            taxi.status = maintenanceStatus;
+
+            card.innerHTML = `
+                <div class="taxi-number">${taxi.id}</div>
+                <div class="taxi-info">
+                    <div class="taxi-model editable" data-field="model">${taxi.model}</div>
+                    <div class="taxi-details">
+                        <span class="editable" data-field="year">${taxi.year}</span> | 
+                        <span class="editable" data-field="domain">${taxi.domain}</span>
+                    </div>
+                </div>
+                <span class="taxi-status status-${maintenanceStatus}">${getStatusText(maintenanceStatus)}</span>
+                <button class="edit-btn">✎</button>
+                <button class="delete-btn">×</button>
+            `;
+
+            // Hacer los campos editables
+            const editableFields = card.querySelectorAll('.editable');
+            editableFields.forEach(field => {
+                field.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
+                    if (!this.isContentEditable) {
+                        this.contentEditable = true;
+                        this.classList.add('editing');
+                        this.focus();
+                        
+                        const range = document.createRange();
+                        range.selectNodeContents(this);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        
+                        const originalValue = this.textContent;
+                        
+                        const handleSave = () => {
+                            this.contentEditable = false;
+                            this.classList.remove('editing');
+                            const fieldName = this.dataset.field;
+                            const newValue = this.textContent.trim();
+                            if (newValue !== originalValue) {
+                                saveChanges(taxi, fieldName, newValue);
+                            }
+                        };
+                        
+                        this.addEventListener('blur', handleSave, { once: true });
+                        this.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                this.blur();
+                            }
+                            if (e.key === 'Escape') {
+                                this.textContent = originalValue;
+                                this.blur();
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Reattach event listeners
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('delete-btn') && 
+                    !e.target.classList.contains('edit-btn') && 
+                    !e.target.classList.contains('editable')) {
+                    showTaxiDetails(taxi);
+                }
+            });
+
+            const deleteBtn = card.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteTaxi(taxi.id);
+            });
+
+            const editBtn = card.querySelector('.edit-btn');
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                editTaxiNumber(taxi);
+            });
+        }
+    }
+
+    // Función para calcular el estado del mantenimiento
+    function calculateMaintenanceStatus(maintenance) {
+        let status = 'ok';
+        
+        Object.values(maintenance).forEach(maint => {
+            const progress = (maint.kmSinceLastService / maint.nextServiceKm) * 100;
+            if (progress >= 100) {
+                status = 'danger';
+            } else if (progress >= 90 && status !== 'danger') {
+                status = 'warning';
+            }
+            
+            // Actualizar el tipo de mantenimiento individual
+            if (progress >= 100) {
+                maint.type = 'danger';
+            } else if (progress >= 90) {
+                maint.type = 'warning';
+            } else {
+                maint.type = 'ok';
+            }
+        });
+        
+        return status;
+    }
+
+    // Función para guardar cambios y actualizar la interfaz
+    function saveChanges(taxi, fieldName, newValue) {
+        taxi[fieldName] = newValue;
+        
+        // Actualizar el estado del taxi basado en el mantenimiento
+        const newStatus = calculateMaintenanceStatus(taxi.maintenance);
+        taxi.status = newStatus;
+        
+        // Actualizar la tarjeta
+        updateTaxiCard(taxi);
+        
+        // Si el panel de detalles está abierto y muestra este taxi, actualizarlo
+        const panel = document.querySelector('.detail-panel');
+        if (panel.classList.contains('active') && panel.getAttribute('data-taxi-id') === taxi.id) {
+            showTaxiDetails(taxi);
+        }
+        
+        // Guardar en localStorage
+        saveTaxiData();
+        
+        return true;
     }
 
     // Función para eliminar un taxi
@@ -239,6 +463,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlay = document.querySelector('.overlay');
         const panelTitle = panel.querySelector('.panel-title');
         
+        // Calcular el estado actual
+        const currentStatus = calculateMaintenanceStatus(taxi.maintenance);
+        taxi.status = currentStatus;
+        
+        // Actualizar la tarjeta correspondiente para mantener la sincronización
+        updateTaxiCard(taxi);
+        
+        // Guardar el ID del taxi actual en el panel
+        panel.setAttribute('data-taxi-id', taxi.id);
+        
         // Asegurar que el panel esté visible antes de actualizar el contenido
         panel.style.display = 'block';
         
@@ -264,60 +498,18 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Hacer los campos editables
-        const editableFields = infoSection.querySelectorAll('.editable');
-        editableFields.forEach(field => {
-            field.addEventListener('dblclick', function() {
-                if (!this.isContentEditable) {
-                    this.contentEditable = true;
-                    this.classList.add('editing');
-                    this.focus();
-                    
-                    const range = document.createRange();
-                    range.selectNodeContents(this);
-                    const selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    
-                    const originalValue = this.textContent;
-                    
-                    const saveChanges = () => {
-                        this.contentEditable = false;
-                        this.classList.remove('editing');
-                        const fieldName = this.dataset.field;
-                        const newValue = this.textContent.trim();
-                        if (newValue !== originalValue) {
-                            taxi[fieldName] = newValue;
-                            saveTaxiData();
-                        }
-                    };
-                    
-                    this.addEventListener('blur', saveChanges, { once: true });
-                    this.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            this.blur();
-                        }
-                        if (e.key === 'Escape') {
-                            this.textContent = originalValue;
-                            this.blur();
-                        }
-                    });
-                }
-            });
-        });
-        
         // Limpiar y actualizar lista de mantenimientos
         const maintenanceList = Object.entries(taxi.maintenance || {}).map(([key, maint]) => {
             const progress = (maint.kmSinceLastService / maint.nextServiceKm) * 100;
             return `
-                <div class="maintenance-item">
+                <div class="maintenance-item" data-maintenance-key="${key}">
                     <div class="maintenance-header">
                         <div class="maintenance-title">${maint.title}</div>
                         <div class="maintenance-date">Último: ${maint.lastDate}</div>
                     </div>
                     <div class="maintenance-km">
-                        Kilómetros desde último servicio: ${maint.kmSinceLastService} km
+                        Kilómetros desde último servicio: 
+                        <span class="editable-km" data-field="kmSinceLastService">${maint.kmSinceLastService}</span> km
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill progress-${maint.type}" 
@@ -336,6 +528,48 @@ document.addEventListener('DOMContentLoaded', function() {
             <h3>Mantenimientos</h3>
             ${maintenanceList}
         `;
+
+        // Hacer los kilómetros editables en mantenimiento
+        const editableKms = maintenanceSection.querySelectorAll('.editable-km');
+        editableKms.forEach(kmField => {
+            kmField.addEventListener('dblclick', function() {
+                if (!this.isContentEditable) {
+                    this.contentEditable = true;
+                    this.classList.add('editing');
+                    this.focus();
+                    
+                    const originalValue = this.textContent;
+                    const maintenanceKey = this.closest('.maintenance-item').dataset.maintenanceKey;
+                    
+                    const saveKmChanges = () => {
+                        this.contentEditable = false;
+                        this.classList.remove('editing');
+                        const newValue = parseInt(this.textContent.trim());
+                        if (!isNaN(newValue) && newValue !== parseInt(originalValue)) {
+                            taxi.maintenance[maintenanceKey].kmSinceLastService = newValue;
+                            updateTaxiStatus(taxi);
+                            updateTaxiCard(taxi);
+                            saveTaxiData();
+                            showTaxiDetails(taxi); // Actualizar el panel
+                        } else {
+                            this.textContent = originalValue;
+                        }
+                    };
+                    
+                    this.addEventListener('blur', saveKmChanges, { once: true });
+                    this.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.blur();
+                        }
+                        if (e.key === 'Escape') {
+                            this.textContent = originalValue;
+                            this.blur();
+                        }
+                    });
+                }
+            });
+        });
 
         // Mostrar panel y overlay con animación
         requestAnimationFrame(() => {
