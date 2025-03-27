@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaxiMaintenance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -26,10 +27,41 @@
 
     <div class="overlay"></div>
     <div class="detail-panel">
-        <button class="close-btn">×</button>
-        <h2>Detalles del Taxi</h2>
-        <div class="taxi-info">
-            <p>Número: <span id="taxi-id"></span></p>
+        <div class="panel-header">
+            <h2 class="panel-title">Detalles del Taxi</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="info-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Año</label>
+                        <span class="taxi-year"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Conductor</label>
+                        <span class="taxi-driver"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="maintenance-section">
+                <h3>Mantenimiento</h3>
+                <div class="maintenance-list">
+                    <!-- Los items de mantenimiento se agregarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="primary-btn schedule-maintenance">
+                    <i class="fas fa-tools"></i>
+                    Programar Mantenimiento
+                </button>
+                <button class="secondary-btn view-history">
+                    <i class="fas fa-history"></i>
+                    Ver Historial
+                </button>
+            </div>
         </div>
     </div>
 

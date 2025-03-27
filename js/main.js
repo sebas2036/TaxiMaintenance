@@ -10,9 +10,74 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Datos de ejemplo
     let taxiData = [
-        { id: 'TX-1001', status: 'ok' },
-        { id: 'TX-1002', status: 'warning' },
-        { id: 'TX-1003', status: 'danger' },
+        {
+            id: 'TX-1001',
+            model: 'Toyota Corolla',
+            year: 2023,
+            driver: 'Carlos Ruiz',
+            status: 'ok',
+            lastService: '01/03/2024',
+            totalKm: 15000,
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 2500,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'frenos': {
+                    title: 'Pastillas de Freno',
+                    lastDate: '01/02/2024',
+                    kmSinceLastService: 12000,
+                    nextServiceKm: 15000,
+                    type: 'warning'
+                }
+            }
+        },
+        {
+            id: 'TX-1002',
+            model: 'Nissan Versa',
+            year: 2022,
+            driver: 'Ana Gómez',
+            status: 'warning',
+            lastService: '14/02/2024',
+            totalKm: 52000,
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '14/02/2024',
+                    kmSinceLastService: 4800,
+                    nextServiceKm: 5000,
+                    type: 'warning'
+                },
+                'correa': {
+                    title: 'Correa de Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'danger'
+                }
+            }
+        },
+        {
+            id: 'TX-1003',
+            model: 'Chevrolet Onix',
+            year: 2021,
+            driver: 'María López',
+            status: 'danger',
+            lastService: '10/12/2023',
+            totalKm: 85000,
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '10/12/2023',
+                    kmSinceLastService: 5500,
+                    nextServiceKm: 5000,
+                    type: 'danger'
+                }
+            }
+        },
         { id: 'TX-1004', status: 'ok' },
         { id: 'TX-1005', status: 'ok' },
         { id: 'TX-1006', status: 'warning' },
@@ -91,9 +156,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para mostrar los detalles del taxi
     function showTaxiDetails(taxi) {
-        document.getElementById('taxi-id').textContent = taxi.id;
-        detailPanel.classList.add('active');
-        overlay.classList.add('active');
+        const panelTitle = detailPanel.querySelector('.panel-title');
+        const taxiYear = detailPanel.querySelector('.taxi-year');
+        const taxiDriver = detailPanel.querySelector('.taxi-driver');
+        const maintenanceList = detailPanel.querySelector('.maintenance-list');
+
+        // Actualizar título y datos generales
+        panelTitle.textContent = `Taxi ${taxi.id}`;
+        taxiYear.textContent = taxi.year || 'No especificado';
+        taxiDriver.textContent = taxi.driver || 'No asignado';
+
+        // Limpiar y actualizar lista de mantenimientos
+        maintenanceList.innerHTML = '';
+        if (taxi.maintenance) {
+            Object.values(taxi.maintenance).forEach(maintenance => {
+                const maintenanceItem = createMaintenanceItem(maintenance);
+                maintenanceList.appendChild(maintenanceItem);
+            });
+        }
+
+        // Mostrar panel
+        detailPanel.style.display = 'block';
+        requestAnimationFrame(() => {
+            overlay.classList.add('active');
+            detailPanel.classList.add('active');
+        });
+    }
+
+    // Función para crear elementos de mantenimiento
+    function createMaintenanceItem(maintenance) {
+        const div = document.createElement('div');
+        div.className = 'maintenance-item';
+
+        const progress = (maintenance.kmSinceLastService / maintenance.nextServiceKm) * 100;
+        const kmRemaining = maintenance.nextServiceKm - maintenance.kmSinceLastService;
+
+        div.innerHTML = `
+            <div class="maintenance-header">
+                <div class="maintenance-title">${maintenance.title}</div>
+                <div class="maintenance-date">${maintenance.lastDate}</div>
+            </div>
+            <div class="maintenance-km">${maintenance.kmSinceLastService.toLocaleString()} km recorridos</div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-${maintenance.type}" style="width: ${progress}%"></div>
+            </div>
+            <div class="next-service">
+                <i class="fas fa-exclamation-circle"></i>
+                ${kmRemaining > 0 ? 
+                    `Servicio en ${kmRemaining.toLocaleString()} km` : 
+                    '¡Servicio requerido!'
+                }
+            </div>
+        `;
+
+        return div;
     }
 
     // Función para editar el número de taxi
@@ -164,15 +280,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event Listeners
-    closeBtn.addEventListener('click', () => {
-        detailPanel.classList.remove('active');
-        overlay.classList.remove('active');
-    });
+    closeBtn.addEventListener('click', closePanel);
+    overlay.addEventListener('click', closePanel);
 
-    overlay.addEventListener('click', () => {
-        detailPanel.classList.remove('active');
+    function closePanel() {
         overlay.classList.remove('active');
-    });
+        detailPanel.classList.remove('active');
+        setTimeout(() => {
+            detailPanel.style.display = 'none';
+        }, 300);
+    }
 
     searchButton.addEventListener('click', searchTaxis);
     searchInput.addEventListener('keyup', (e) => {
@@ -185,6 +302,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addTaxiBtn.addEventListener('click', addNewTaxi);
+
+    // Event listener para el botón de programar mantenimiento
+    document.querySelector('.schedule-maintenance').addEventListener('click', () => {
+        alert('Función de programar mantenimiento en desarrollo');
+    });
+
+    // Event listener para el botón de ver historial
+    document.querySelector('.view-history').addEventListener('click', () => {
+        alert('Función de ver historial en desarrollo');
+    });
 
     // Inicialización
     taxiData.forEach(taxi => {
