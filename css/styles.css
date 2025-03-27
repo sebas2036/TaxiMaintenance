@@ -273,96 +273,126 @@ header h1 {
 }
 
 .panel-content {
-    padding: 20px;
+    padding: 12px;
     overflow-y: auto;
     height: calc(100vh - 65px);
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #f8f9fa;
+}
+
+.panel-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+    background-color: #3498db;
+    border-radius: 4px;
+    border: 2px solid #f8f9fa;
 }
 
 .info-section {
-    padding: 15px;
+    padding: 8px;
     border-bottom: 1px solid #e9ecef;
 }
 
 .info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .info-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
+    align-items: center;
+    text-align: center;
 }
 
 .info-item label {
     font-size: 12px;
-    color: #6c757d;
+    color: #2c3e50;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 2px;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
 }
 
 .info-item span {
     font-size: 14px;
     color: #2c3e50;
     font-weight: 500;
+    margin-top: 0;
+    width: 100%;
+    text-align: center;
 }
 
 .maintenance-section {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .maintenance-section h3 {
-    font-size: 16px;
+    font-size: 14px;
     color: white;
-    margin-bottom: 12px;
+    margin: 8px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     background: #3498db;
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .maintenance-item {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
     border-radius: 6px;
-    padding: 12px;
+    padding: 10px;
     margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .maintenance-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .maintenance-title {
-    font-size: 14px;
+    font-size: 13px;
     color: #2c3e50;
-    font-weight: 500;
+    font-weight: 600;
+    margin-bottom: 2px;
 }
 
 .maintenance-date {
-    color: #6c757d;
+    color: #2c3e50;
     font-size: 12px;
+    font-weight: 500;
 }
 
 .maintenance-km {
-    color: #6c757d;
+    color: #2c3e50;
     font-size: 12px;
-    margin: 6px 0;
+    font-weight: 500;
+    margin: 4px 0;
 }
 
 .progress-bar {
-    height: 4px;
+    height: 3px;
     background: #e9ecef;
     border-radius: 2px;
     overflow: hidden;
-    margin: 6px 0;
+    margin: 4px 0;
 }
 
 .progress-fill {
@@ -385,36 +415,27 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-top: 6px;
+    margin-top: 4px;
+    font-weight: 500;
 }
 
 .next-service i {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .action-buttons {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px 15px;
+    padding: 8px 12px;
     background: white;
     border-top: 1px solid #e9ecef;
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .primary-btn, .secondary-btn {
-    flex: 1;
-    padding: 8px;
+    padding: 6px;
     border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: all 0.2s;
+    font-size: 13px;
+    gap: 3px;
 }
 
 .primary-btn {
@@ -438,24 +459,19 @@ header h1 {
 }
 
 .taxi-brand, .taxi-year, .taxi-domain {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align-last: center;
-    -moz-text-align-last: center;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
 }
 
 .taxi-brand.editing, .taxi-year.editing, .taxi-domain.editing {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align-last: center;
-    -moz-text-align-last: center;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
 }
 
 .info-item .editable {
@@ -469,11 +485,12 @@ header h1 {
     min-height: 18px;
     width: 100%;
     box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: center;
     border: 1px solid transparent;
     background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .info-item .editable:hover {
@@ -488,10 +505,10 @@ header h1 {
     outline: none;
     padding: 8px 12px;
     width: 100%;
-    display: inline-block;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {
