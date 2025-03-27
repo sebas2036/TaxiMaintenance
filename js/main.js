@@ -219,21 +219,25 @@ document.addEventListener('DOMContentLoaded', function() {
         taxi.status = currentStatus;
 
         card.innerHTML = `
-            <div class="taxi-number">${taxi.id}</div>
-            <div class="taxi-info">
-                <div class="taxi-model editable" data-field="model">${taxi.model}</div>
-                <div class="taxi-details">
-                    <span class="editable" data-field="year">${taxi.year}</span> | 
-                    <span class="editable" data-field="domain">${taxi.domain}</span>
-                </div>
+            <div class="taxi-header">
+                <div class="taxi-number">${taxi.id}</div>
             </div>
-            <span class="taxi-status status-${currentStatus}">${getStatusText(currentStatus)}</span>
-            <button class="edit-btn">✎</button>
-            <button class="delete-btn">×</button>
+            <div class="taxi-content">
+                <div class="taxi-info">
+                    <div class="taxi-model" data-field="model">${taxi.model}</div>
+                    <div class="taxi-details">
+                        <span data-field="year">${taxi.year}</span> | 
+                        <span data-field="domain">${taxi.domain}</span>
+                    </div>
+                </div>
+                <span class="taxi-status status-${currentStatus}">${getStatusText(currentStatus)}</span>
+                <button class="edit-btn">✎</button>
+                <button class="delete-btn">×</button>
+            </div>
         `;
 
         // Hacer los campos editables
-        const editableFields = card.querySelectorAll('.editable');
+        const editableFields = card.querySelectorAll('[data-field]');
         editableFields.forEach(field => {
             field.addEventListener('dblclick', function(e) {
                 e.stopPropagation(); // Evitar que se abra el panel al editar
@@ -279,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('delete-btn') && 
                 !e.target.classList.contains('edit-btn') && 
-                !e.target.classList.contains('editable')) {
+                !e.target.hasAttribute('data-field')) {
                 showTaxiDetails(taxi);
             }
         });
@@ -309,21 +313,25 @@ document.addEventListener('DOMContentLoaded', function() {
             taxi.status = maintenanceStatus;
 
             card.innerHTML = `
-                <div class="taxi-number">${taxi.id}</div>
-                <div class="taxi-info">
-                    <div class="taxi-model editable" data-field="model">${taxi.model}</div>
-                    <div class="taxi-details">
-                        <span class="editable" data-field="year">${taxi.year}</span> | 
-                        <span class="editable" data-field="domain">${taxi.domain}</span>
-                    </div>
+                <div class="taxi-header">
+                    <div class="taxi-number">${taxi.id}</div>
                 </div>
-                <span class="taxi-status status-${maintenanceStatus}">${getStatusText(maintenanceStatus)}</span>
-                <button class="edit-btn">✎</button>
-                <button class="delete-btn">×</button>
+                <div class="taxi-content">
+                    <div class="taxi-info">
+                        <div class="taxi-model" data-field="model">${taxi.model}</div>
+                        <div class="taxi-details">
+                            <span data-field="year">${taxi.year}</span> | 
+                            <span data-field="domain">${taxi.domain}</span>
+                        </div>
+                    </div>
+                    <span class="taxi-status status-${maintenanceStatus}">${getStatusText(maintenanceStatus)}</span>
+                    <button class="edit-btn">✎</button>
+                    <button class="delete-btn">×</button>
+                </div>
             `;
 
             // Hacer los campos editables
-            const editableFields = card.querySelectorAll('.editable');
+            const editableFields = card.querySelectorAll('[data-field]');
             editableFields.forEach(field => {
                 field.addEventListener('dblclick', function(e) {
                     e.stopPropagation();
@@ -369,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('delete-btn') && 
                     !e.target.classList.contains('edit-btn') && 
-                    !e.target.classList.contains('editable')) {
+                    !e.target.hasAttribute('data-field')) {
                     showTaxiDetails(taxi);
                 }
             });
