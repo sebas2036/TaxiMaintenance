@@ -31,18 +31,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     nextServiceKm: 15000,
                     type: 'warning'
                 },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
                 'bateria': {
                     title: 'Batería',
-                    lastDate: '15/02/2024',
+                    lastDate: '15/01/2024',
                     kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
+                    nextServiceKm: 20000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '01/01/2024',
+                    kmSinceLastService: 30000,
+                    nextServiceKm: 60000,
                     type: 'ok'
                 }
             }
@@ -63,10 +63,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 'neumaticos': {
                     title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 15000,
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 14000,
+                    nextServiceKm: 15000,
+                    type: 'warning'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '01/12/2023',
+                    kmSinceLastService: 18000,
                     nextServiceKm: 20000,
-                    type: 'ok'
+                    type: 'warning'
                 },
                 'distribucion': {
                     title: 'Distribución',
@@ -74,13 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     kmSinceLastService: 48000,
                     nextServiceKm: 50000,
                     type: 'warning'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
                 }
             }
         },
@@ -100,357 +100,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 'neumaticos': {
                     title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 20000,
-                    nextServiceKm: 25000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1004',
-            model: 'Toyota Yaris',
-            year: 2023,
-            domain: 'GH012IJ',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '15/03/2024',
-                    kmSinceLastService: 1500,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1005',
-            model: 'Nissan Sentra',
-            year: 2022,
-            domain: 'IJ345KL',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '20/03/2024',
-                    kmSinceLastService: 800,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 12000,
-                    nextServiceKm: 15000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1006',
-            model: 'Chevrolet Cruze',
-            year: 2021,
-            domain: 'KL678MN',
-            status: 'warning',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 4200,
-                    nextServiceKm: 5000,
-                    type: 'warning'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 18000,
-                    nextServiceKm: 20000,
-                    type: 'warning'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1007',
-            model: 'Toyota Etios',
-            year: 2023,
-            domain: 'MN901OP',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '10/03/2024',
-                    kmSinceLastService: 2000,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 5000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1008',
-            model: 'Nissan March',
-            year: 2022,
-            domain: 'OP234QR',
-            status: 'danger',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '05/02/2024',
-                    kmSinceLastService: 5200,
-                    nextServiceKm: 5000,
-                    type: 'danger'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 22000,
-                    nextServiceKm: 25000,
-                    type: 'danger'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1009',
-            model: 'Chevrolet Prisma',
-            year: 2021,
-            domain: 'QR567ST',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '25/03/2024',
-                    kmSinceLastService: 500,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 9000,
-                    nextServiceKm: 15000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1010',
-            model: 'Toyota Hilux',
-            year: 2023,
-            domain: 'ST890UV',
-            status: 'warning',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '15/03/2024',
-                    kmSinceLastService: 3800,
-                    nextServiceKm: 5000,
-                    type: 'warning'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
+                    lastDate: '15/11/2023',
                     kmSinceLastService: 16000,
+                    nextServiceKm: 15000,
+                    type: 'danger'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '01/11/2023',
+                    kmSinceLastService: 21000,
                     nextServiceKm: 20000,
-                    type: 'warning'
+                    type: 'danger'
                 },
                 'distribucion': {
                     title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
+                    lastDate: '01/10/2023',
+                    kmSinceLastService: 52000,
                     nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1011',
-            model: 'Nissan Frontier',
-            year: 2022,
-            domain: 'UV123WX',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '20/03/2024',
-                    kmSinceLastService: 1200,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 11000,
-                    nextServiceKm: 15000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
-                }
-            }
-        },
-        {
-            id: 'TX-1012',
-            model: 'Chevrolet S10',
-            year: 2021,
-            domain: 'WX456YZ',
-            status: 'ok',
-            maintenance: {
-                'aceite': {
-                    title: 'Aceite y Filtros',
-                    lastDate: '10/03/2024',
-                    kmSinceLastService: 2800,
-                    nextServiceKm: 5000,
-                    type: 'ok'
-                },
-                'neumaticos': {
-                    title: 'Neumáticos',
-                    lastDate: '01/03/2024',
-                    kmSinceLastService: 13000,
-                    nextServiceKm: 15000,
-                    type: 'ok'
-                },
-                'distribucion': {
-                    title: 'Distribución',
-                    lastDate: '10/01/2024',
-                    kmSinceLastService: 48000,
-                    nextServiceKm: 50000,
-                    type: 'ok'
-                },
-                'bateria': {
-                    title: 'Batería',
-                    lastDate: '15/02/2024',
-                    kmSinceLastService: 8000,
-                    nextServiceKm: 10000,
-                    type: 'ok'
+                    type: 'danger'
                 }
             }
         }
@@ -461,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const card = document.createElement('div');
         card.className = 'taxi-card';
         card.setAttribute('data-taxi-id', taxi.id);
-        
+
         card.innerHTML = `
             <div class="taxi-number">${taxi.id}</div>
             <span class="taxi-status status-${taxi.status}">${getStatusText(taxi.status)}</span>
@@ -496,17 +163,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para eliminar un taxi
     function deleteTaxi(taxiId) {
         if (confirm('¿Estás seguro de que deseas eliminar este taxi?')) {
-            // Eliminar del array de datos
             taxiData = taxiData.filter(taxi => taxi.id !== taxiId);
-            
-            // Eliminar la tarjeta del DOM
             const card = document.querySelector(`[data-taxi-id="${taxiId}"]`);
             if (card) {
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.8)';
-                setTimeout(() => {
-                    card.remove();
-                }, 200);
+                card.remove();
             }
         }
     }
@@ -528,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const taxiYear = detailPanel.querySelector('.taxi-year');
         const taxiDomain = detailPanel.querySelector('.taxi-domain');
         const maintenanceList = detailPanel.querySelector('.maintenance-list');
-
+        
         // Actualizar título y datos generales
         panelTitle.textContent = `Taxi ${taxi.id}`;
         taxiBrand.textContent = taxi.model || 'No especificado';
@@ -572,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 maintenanceList.appendChild(maintenanceItem);
             });
         }
-
+        
         // Mostrar panel
         detailPanel.style.display = 'block';
         requestAnimationFrame(() => {
@@ -616,23 +276,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const newNumber = prompt('Ingrese el nuevo número de taxi (máximo 4 dígitos):', currentNumber);
         
         if (newNumber !== null) {
-            // Validar que sea un número y tenga máximo 4 dígitos
             if (/^\d{1,4}$/.test(newNumber)) {
                 const newId = `TX-${newNumber}`;
                 
-                // Verificar si el número ya existe
                 if (taxiData.some(t => t.id === newId && t.id !== taxi.id)) {
                     alert('Este número de taxi ya existe.');
                     return;
                 }
 
-                // Encontrar la tarjeta actual antes de cambiar el ID
                 const currentCard = document.querySelector(`[data-taxi-id="${taxi.id}"]`);
-                
-                // Actualizar el ID en el array de datos
                 taxi.id = newId;
                 
-                // Actualizar la tarjeta en el DOM
                 if (currentCard) {
                     currentCard.querySelector('.taxi-number').textContent = newId;
                     currentCard.setAttribute('data-taxi-id', newId);
@@ -650,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const newNumber = lastNumber + 1;
         const newTaxi = {
             id: `TX-${newNumber}`,
-            status: 'ok' // Por defecto, nuevo taxi en estado OK
+            status: 'ok'
         };
         
         taxiData.push(newTaxi);
@@ -663,58 +317,44 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         const cards = document.querySelectorAll('.taxi-card');
         
-        if (searchTerm === '') {
-            // Si el campo de búsqueda está vacío, mostrar todas las tarjetas
-            cards.forEach(card => {
-                card.style.display = 'block';
-            });
-        } else {
-            // Si hay término de búsqueda, filtrar las tarjetas
-            cards.forEach(card => {
-                const taxiNumber = card.querySelector('.taxi-number').textContent.toLowerCase();
-                card.style.display = taxiNumber.includes(searchTerm) ? 'block' : 'none';
-            });
-        }
+        cards.forEach(card => {
+            const taxiNumber = card.querySelector('.taxi-number').textContent.toLowerCase();
+            card.style.display = searchTerm === '' || taxiNumber.includes(searchTerm) ? 'block' : 'none';
+        });
+    }
+
+    // Función para guardar los datos en localStorage
+    function saveTaxiData() {
+        localStorage.setItem('taxiData', JSON.stringify(taxiData));
     }
 
     // Event Listeners
-    closeBtn.addEventListener('click', closePanel);
-    overlay.addEventListener('click', closePanel);
-
-    function closePanel() {
+    closeBtn.addEventListener('click', () => {
         overlay.classList.remove('active');
         detailPanel.classList.remove('active');
         setTimeout(() => {
             detailPanel.style.display = 'none';
         }, 300);
-    }
+    });
+
+    overlay.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        detailPanel.classList.remove('active');
+        setTimeout(() => {
+            detailPanel.style.display = 'none';
+        }, 300);
+    });
 
     searchButton.addEventListener('click', searchTaxis);
     searchInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') {
             searchTaxis();
         } else {
-            // Buscar mientras el usuario escribe
             searchTaxis();
         }
     });
 
     addTaxiBtn.addEventListener('click', addNewTaxi);
-
-    // Event listener para el botón de programar mantenimiento
-    document.querySelector('.schedule-maintenance').addEventListener('click', () => {
-        alert('Función de programar mantenimiento en desarrollo');
-    });
-
-    // Event listener para el botón de ver historial
-    document.querySelector('.view-history').addEventListener('click', () => {
-        alert('Función de ver historial en desarrollo');
-    });
-
-    // Función para guardar los datos en localStorage
-    function saveTaxiData() {
-        localStorage.setItem('taxiData', JSON.stringify(taxiData));
-    }
 
     // Inicialización
     taxiData.forEach(taxi => {

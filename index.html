@@ -57,14 +57,51 @@
             </div>
 
             <div class="action-buttons">
-                <button class="primary-btn schedule-maintenance">
-                    <i class="fas fa-tools"></i>
+                <button class="primary-btn" id="programMaintenance">
+                    <i class="fas fa-calendar-plus"></i>
                     Programar Mantenimiento
                 </button>
-                <button class="secondary-btn view-history">
+                <button class="secondary-btn" id="viewHistory">
                     <i class="fas fa-history"></i>
                     Ver Historial
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Programación de Mantenimiento -->
+    <div class="modal" id="maintenanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Programar Mantenimiento</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Mantenimiento</label>
+                    <select id="maintenanceType" class="form-control">
+                        <option value="aceite">Aceite y Filtros</option>
+                        <option value="neumaticos">Neumáticos</option>
+                        <option value="distribucion">Distribución</option>
+                        <option value="bateria">Batería</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="maintenanceDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Kilometraje Actual</label>
+                    <input type="number" id="currentKm" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Próximo Servicio (km)</label>
+                    <input type="number" id="nextServiceKm" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancelMaintenance">Cancelar</button>
+                <button class="primary-btn" id="saveMaintenance">Guardar</button>
             </div>
         </div>
     </div>
