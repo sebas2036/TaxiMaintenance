@@ -129,8 +129,60 @@ document.addEventListener('DOMContentLoaded', function() {
         card.className = 'taxi-card';
         card.setAttribute('data-taxi-id', taxi.id);
 
+        // Asegurarse de que todos los campos necesarios existan
+        const defaultData = {
+            model: 'No especificado',
+            year: 'No especificado',
+            domain: 'No especificado',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Aceite y Filtros',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 20000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 60000,
+                    type: 'ok'
+                }
+            }
+        };
+
+        // Combinar datos por defecto con los datos del taxi
+        taxi = {
+            ...defaultData,
+            ...taxi,
+            maintenance: {
+                ...defaultData.maintenance,
+                ...(taxi.maintenance || {})
+            }
+        };
+
         card.innerHTML = `
             <div class="taxi-number">${taxi.id}</div>
+            <div class="taxi-info">
+                <div class="taxi-model">${taxi.model}</div>
+                <div class="taxi-details">${taxi.year} | ${taxi.domain}</div>
+            </div>
             <span class="taxi-status status-${taxi.status}">${getStatusText(taxi.status)}</span>
             <button class="edit-btn">✎</button>
             <button class="delete-btn">×</button>
@@ -183,91 +235,113 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para mostrar los detalles del taxi
     function showTaxiDetails(taxi) {
-        const panelTitle = detailPanel.querySelector('.panel-title');
-        const taxiBrand = detailPanel.querySelector('.taxi-brand');
-        const taxiYear = detailPanel.querySelector('.taxi-year');
-        const taxiDomain = detailPanel.querySelector('.taxi-domain');
-        const maintenanceList = detailPanel.querySelector('.maintenance-list');
+        const panel = document.querySelector('.detail-panel');
+        const overlay = document.querySelector('.overlay');
+        const panelTitle = panel.querySelector('.panel-title');
+        
+        // Asegurar que el panel esté visible antes de actualizar el contenido
+        panel.style.display = 'block';
         
         // Actualizar título y datos generales
         panelTitle.textContent = `Taxi ${taxi.id}`;
-        taxiBrand.textContent = taxi.model || 'No especificado';
-        taxiYear.textContent = taxi.year || 'No especificado';
-        taxiDomain.textContent = taxi.domain || 'No especificado';
-
-        // Función para hacer un elemento editable
-        function makeEditable(element, property) {
-            element.addEventListener('dblclick', () => {
-                element.contentEditable = true;
-                element.classList.add('editing');
-                element.focus();
-
-                // Guardar cambios cuando se pierde el foco
-                element.addEventListener('blur', () => {
-                    element.contentEditable = false;
-                    element.classList.remove('editing');
-                    taxi[property] = element.textContent;
-                    saveTaxiData();
-                });
-
-                // Guardar cambios al presionar Enter
-                element.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        element.blur();
-                    }
-                });
-            });
-        }
-
-        // Hacer los campos editables
-        makeEditable(taxiBrand, 'model');
-        makeEditable(taxiYear, 'year');
-        makeEditable(taxiDomain, 'domain');
-
-        // Limpiar y actualizar lista de mantenimientos
-        maintenanceList.innerHTML = '';
-        if (taxi.maintenance) {
-            Object.values(taxi.maintenance).forEach(maintenance => {
-                const maintenanceItem = createMaintenanceItem(maintenance);
-                maintenanceList.appendChild(maintenanceItem);
-            });
-        }
         
-        // Mostrar panel
-        detailPanel.style.display = 'block';
-        requestAnimationFrame(() => {
-            overlay.classList.add('active');
-            detailPanel.classList.add('active');
-        });
-    }
-
-    // Función para crear elementos de mantenimiento
-    function createMaintenanceItem(maintenance) {
-        const div = document.createElement('div');
-        div.className = 'maintenance-item';
-
-        const progress = (maintenance.kmSinceLastService / maintenance.nextServiceKm) * 100;
-        const kmRemaining = maintenance.nextServiceKm - maintenance.kmSinceLastService;
-
-        div.innerHTML = `
-            <div class="maintenance-header">
-                <div class="maintenance-title">${maintenance.title}</div>
-                <div class="maintenance-date">${maintenance.lastDate}</div>
-            </div>
-            <div class="maintenance-km">${maintenance.kmSinceLastService.toLocaleString()} km recorridos</div>
-            <div class="progress-bar">
-                <div class="progress-fill progress-${maintenance.type}" style="width: ${progress}%"></div>
-            </div>
-            <div class="next-service">
-                <i class="fas fa-exclamation-circle"></i>
-                ${kmRemaining > 0 ? 
-                    `Servicio en ${kmRemaining.toLocaleString()} km` : 
-                    '¡Servicio requerido!'
-                }
+        // Actualizar información general
+        const infoSection = panel.querySelector('.info-section');
+        infoSection.innerHTML = `
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Marca</label>
+                    <span class="taxi-brand editable" data-field="model">${taxi.model || 'No especificado'}</span>
+                </div>
+                <div class="info-item">
+                    <label>Año</label>
+                    <span class="taxi-year editable" data-field="year">${taxi.year || 'No especificado'}</span>
+                </div>
+                <div class="info-item">
+                    <label>Dominio</label>
+                    <span class="taxi-domain editable" data-field="domain">${taxi.domain || 'No especificado'}</span>
+                </div>
             </div>
         `;
+        
+        // Hacer los campos editables
+        const editableFields = infoSection.querySelectorAll('.editable');
+        editableFields.forEach(field => {
+            field.addEventListener('dblclick', function() {
+                if (!this.isContentEditable) {
+                    this.contentEditable = true;
+                    this.classList.add('editing');
+                    this.focus();
+                    
+                    const range = document.createRange();
+                    range.selectNodeContents(this);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    
+                    const originalValue = this.textContent;
+                    
+                    const saveChanges = () => {
+                        this.contentEditable = false;
+                        this.classList.remove('editing');
+                        const fieldName = this.dataset.field;
+                        const newValue = this.textContent.trim();
+                        if (newValue !== originalValue) {
+                            taxi[fieldName] = newValue;
+                            saveTaxiData();
+                        }
+                    };
+                    
+                    this.addEventListener('blur', saveChanges, { once: true });
+                    this.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.blur();
+                        }
+                        if (e.key === 'Escape') {
+                            this.textContent = originalValue;
+                            this.blur();
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Limpiar y actualizar lista de mantenimientos
+        const maintenanceList = Object.entries(taxi.maintenance || {}).map(([key, maint]) => {
+            const progress = (maint.kmSinceLastService / maint.nextServiceKm) * 100;
+            return `
+                <div class="maintenance-item">
+                    <div class="maintenance-header">
+                        <div class="maintenance-title">${maint.title}</div>
+                        <div class="maintenance-date">Último: ${maint.lastDate}</div>
+                    </div>
+                    <div class="maintenance-km">
+                        Kilómetros desde último servicio: ${maint.kmSinceLastService} km
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-${maint.type}" 
+                             style="width: ${Math.min(progress, 100)}%"></div>
+                    </div>
+                    <div class="next-service">
+                        <i class="fas fa-wrench"></i>
+                        Próximo servicio: ${maint.nextServiceKm} km
+                    </div>
+                </div>
+            `;
+        }).join('');
 
-        return div;
+        const maintenanceSection = panel.querySelector('.maintenance-section');
+        maintenanceSection.innerHTML = `
+            <h3>Mantenimientos</h3>
+            ${maintenanceList}
+        `;
+
+        // Mostrar panel y overlay con animación
+        requestAnimationFrame(() => {
+            overlay.classList.add('active');
+            panel.classList.add('active');
+        });
     }
 
     // Función para editar el número de taxi
@@ -302,14 +376,49 @@ document.addEventListener('DOMContentLoaded', function() {
         const lastTaxi = taxiData[taxiData.length - 1];
         const lastNumber = parseInt(lastTaxi.id.split('-')[1]);
         const newNumber = lastNumber + 1;
+        
         const newTaxi = {
             id: `TX-${newNumber}`,
-            status: 'ok'
+            model: 'Nuevo Taxi',
+            year: new Date().getFullYear(),
+            domain: 'Pendiente',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Aceite y Filtros',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 20000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: 'No registrado',
+                    kmSinceLastService: 0,
+                    nextServiceKm: 60000,
+                    type: 'ok'
+                }
+            }
         };
         
         taxiData.push(newTaxi);
         const newCard = createTaxiCard(newTaxi);
         taxiGrid.appendChild(newCard);
+        saveTaxiData();
     }
 
     // Función de búsqueda
@@ -328,21 +437,40 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('taxiData', JSON.stringify(taxiData));
     }
 
-    // Event Listeners
-    closeBtn.addEventListener('click', () => {
+    // Función para cerrar el panel de detalles
+    function closeDetailPanel() {
+        const panel = document.querySelector('.detail-panel');
+        const overlay = document.querySelector('.overlay');
+        
         overlay.classList.remove('active');
-        detailPanel.classList.remove('active');
+        panel.classList.remove('active');
+        
+        // Esperar a que termine la animación antes de ocultar
         setTimeout(() => {
-            detailPanel.style.display = 'none';
+            panel.style.display = 'none';
         }, 300);
+    }
+
+    // Event Listeners
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeDetailPanel();
     });
 
-    overlay.addEventListener('click', () => {
-        overlay.classList.remove('active');
-        detailPanel.classList.remove('active');
-        setTimeout(() => {
-            detailPanel.style.display = 'none';
-        }, 300);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeDetailPanel();
+        }
+    });
+
+    // Agregar escape key para cerrar el panel
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const panel = document.querySelector('.detail-panel');
+            if (panel.classList.contains('active')) {
+                closeDetailPanel();
+            }
+        }
     });
 
     searchButton.addEventListener('click', searchTaxis);
