@@ -224,9 +224,9 @@ header h1 {
 
 .detail-panel {
     position: fixed;
-    right: -500px;
+    right: -600px;
     top: 0;
-    width: 500px;
+    width: 600px;
     height: 100vh;
     background: white;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
@@ -312,6 +312,56 @@ header h1 {
     font-size: 14px;
     color: #2c3e50;
     font-weight: 500;
+}
+
+.info-item input {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 100%;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.info-item input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.info-item input:hover {
+    border-color: #bdc3c7;
+}
+
+.info-item .editable {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.info-item .editable:hover {
+    background-color: #f8f9fa;
+}
+
+.info-item .editable.editing {
+    background-color: white;
+    border: 1px solid #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+    padding: 4px 8px;
+    width: 100%;
+    display: inline-block;
+}
+
+.info-item .editable.editing:focus {
+    border-color: #3498db;
 }
 
 .maintenance-section {

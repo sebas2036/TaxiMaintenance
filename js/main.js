@@ -297,6 +297,35 @@ document.addEventListener('DOMContentLoaded', function() {
         taxiYear.textContent = taxi.year || 'No especificado';
         taxiDomain.textContent = taxi.domain || 'No especificado';
 
+        // Función para hacer un elemento editable
+        function makeEditable(element, property) {
+            element.addEventListener('dblclick', () => {
+                element.contentEditable = true;
+                element.classList.add('editing');
+                element.focus();
+
+                // Guardar cambios cuando se pierde el foco
+                element.addEventListener('blur', () => {
+                    element.contentEditable = false;
+                    element.classList.remove('editing');
+                    taxi[property] = element.textContent;
+                    saveTaxiData();
+                });
+
+                // Guardar cambios al presionar Enter
+                element.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        element.blur();
+                    }
+                });
+            });
+        }
+
+        // Hacer los campos editables
+        makeEditable(taxiBrand, 'model');
+        makeEditable(taxiYear, 'year');
+        makeEditable(taxiDomain, 'domain');
+
         // Limpiar y actualizar lista de mantenimientos
         maintenanceList.innerHTML = '';
         if (taxi.maintenance) {
@@ -443,6 +472,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.view-history').addEventListener('click', () => {
         alert('Función de ver historial en desarrollo');
     });
+
+    // Función para guardar los datos en localStorage
+    function saveTaxiData() {
+        localStorage.setItem('taxiData', JSON.stringify(taxiData));
+    }
 
     // Inicialización
     taxiData.forEach(taxi => {
