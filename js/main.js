@@ -14,10 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'TX-1001',
             model: 'Toyota Corolla',
             year: 2023,
-            driver: 'Carlos Ruiz',
+            domain: 'AB123CD',
             status: 'ok',
-            lastService: '01/03/2024',
-            totalKm: 15000,
             maintenance: {
                 'aceite': {
                     title: 'Cambio de Aceite',
@@ -39,10 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'TX-1002',
             model: 'Nissan Versa',
             year: 2022,
-            driver: 'Ana Gómez',
+            domain: 'CD456EF',
             status: 'warning',
-            lastService: '14/02/2024',
-            totalKm: 52000,
             maintenance: {
                 'aceite': {
                     title: 'Cambio de Aceite',
@@ -64,10 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'TX-1003',
             model: 'Chevrolet Onix',
             year: 2021,
-            driver: 'María López',
+            domain: 'EF789GH',
             status: 'danger',
-            lastService: '10/12/2023',
-            totalKm: 85000,
             maintenance: {
                 'aceite': {
                     title: 'Cambio de Aceite',
@@ -78,15 +72,150 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         },
-        { id: 'TX-1004', status: 'ok' },
-        { id: 'TX-1005', status: 'ok' },
-        { id: 'TX-1006', status: 'warning' },
-        { id: 'TX-1007', status: 'ok' },
-        { id: 'TX-1008', status: 'danger' },
-        { id: 'TX-1009', status: 'ok' },
-        { id: 'TX-1010', status: 'warning' },
-        { id: 'TX-1011', status: 'ok' },
-        { id: 'TX-1012', status: 'ok' }
+        {
+            id: 'TX-1004',
+            model: 'Toyota Yaris',
+            year: 2023,
+            domain: 'GH012IJ',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '15/03/2024',
+                    kmSinceLastService: 1500,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        },
+        {
+            id: 'TX-1005',
+            model: 'Nissan Sentra',
+            year: 2022,
+            domain: 'IJ345KL',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '20/03/2024',
+                    kmSinceLastService: 800,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        },
+        {
+            id: 'TX-1006',
+            model: 'Chevrolet Cruze',
+            year: 2021,
+            domain: 'KL678MN',
+            status: 'warning',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 4200,
+                    nextServiceKm: 5000,
+                    type: 'warning'
+                }
+            }
+        },
+        {
+            id: 'TX-1007',
+            model: 'Toyota Etios',
+            year: 2023,
+            domain: 'MN901OP',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '10/03/2024',
+                    kmSinceLastService: 2000,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        },
+        {
+            id: 'TX-1008',
+            model: 'Nissan March',
+            year: 2022,
+            domain: 'OP234QR',
+            status: 'danger',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '05/02/2024',
+                    kmSinceLastService: 5200,
+                    nextServiceKm: 5000,
+                    type: 'danger'
+                }
+            }
+        },
+        {
+            id: 'TX-1009',
+            model: 'Chevrolet Prisma',
+            year: 2021,
+            domain: 'QR567ST',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '25/03/2024',
+                    kmSinceLastService: 500,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        },
+        {
+            id: 'TX-1010',
+            model: 'Toyota Hilux',
+            year: 2023,
+            domain: 'ST890UV',
+            status: 'warning',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '15/03/2024',
+                    kmSinceLastService: 3800,
+                    nextServiceKm: 5000,
+                    type: 'warning'
+                }
+            }
+        },
+        {
+            id: 'TX-1011',
+            model: 'Nissan Frontier',
+            year: 2022,
+            domain: 'UV123WX',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '20/03/2024',
+                    kmSinceLastService: 1200,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        },
+        {
+            id: 'TX-1012',
+            model: 'Chevrolet S10',
+            year: 2021,
+            domain: 'WX456YZ',
+            status: 'ok',
+            maintenance: {
+                'aceite': {
+                    title: 'Cambio de Aceite',
+                    lastDate: '10/03/2024',
+                    kmSinceLastService: 2800,
+                    nextServiceKm: 5000,
+                    type: 'ok'
+                }
+            }
+        }
     ];
 
     // Función para crear una tarjeta de taxi
@@ -157,14 +286,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para mostrar los detalles del taxi
     function showTaxiDetails(taxi) {
         const panelTitle = detailPanel.querySelector('.panel-title');
+        const taxiBrand = detailPanel.querySelector('.taxi-brand');
         const taxiYear = detailPanel.querySelector('.taxi-year');
-        const taxiDriver = detailPanel.querySelector('.taxi-driver');
+        const taxiDomain = detailPanel.querySelector('.taxi-domain');
         const maintenanceList = detailPanel.querySelector('.maintenance-list');
 
         // Actualizar título y datos generales
         panelTitle.textContent = `Taxi ${taxi.id}`;
+        taxiBrand.textContent = taxi.model || 'No especificado';
         taxiYear.textContent = taxi.year || 'No especificado';
-        taxiDriver.textContent = taxi.driver || 'No asignado';
+        taxiDomain.textContent = taxi.domain || 'No especificado';
 
         // Limpiar y actualizar lista de mantenimientos
         maintenanceList.innerHTML = '';
