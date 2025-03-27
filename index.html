@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiMaintenance</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TaxiMaintenance</h1>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar taxi...">
+                    <button>🔍</button>
+                </div>
+                <button class="add-taxi-btn">+</button>
+            </div>
+        </header>
+        
+        <main>
+            <div id="taxi-grid" class="taxi-grid"></div>
+        </main>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="detail-panel">
+        <button class="close-btn">×</button>
+        <h2>Detalles del Taxi</h2>
+        <div class="taxi-info">
+            <p>Número: <span id="taxi-id"></span></p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
