@@ -25,4 +25,10 @@ python3 -m http.server 8000
 
 - `index.html`: Página principal
 - `css/styles.css`: Estilos
-- `js/main.js`: Funcionalidad 
+- `js/main.js`: Funcionalidad
+
+## 🔄 Commit Automático
+
+Para subir cambios automáticamente:
+1. Haz doble clic en `push-flota.command` en el escritorio
+2. Los cambios se subirán a GitHub automáticamente 
