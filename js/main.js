@@ -18,18 +18,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '01/03/2024',
                     kmSinceLastService: 2500,
                     nextServiceKm: 5000,
                     type: 'ok'
                 },
-                'frenos': {
-                    title: 'Pastillas de Freno',
+                'neumaticos': {
+                    title: 'Neumáticos',
                     lastDate: '01/02/2024',
                     kmSinceLastService: 12000,
                     nextServiceKm: 15000,
                     type: 'warning'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -41,18 +55,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'warning',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '14/02/2024',
                     kmSinceLastService: 4800,
                     nextServiceKm: 5000,
                     type: 'warning'
                 },
-                'correa': {
-                    title: 'Correa de Distribución',
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 15000,
+                    nextServiceKm: 20000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
                     lastDate: '10/01/2024',
                     kmSinceLastService: 48000,
                     nextServiceKm: 50000,
-                    type: 'danger'
+                    type: 'warning'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -64,11 +92,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'danger',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '10/12/2023',
                     kmSinceLastService: 5500,
                     nextServiceKm: 5000,
                     type: 'danger'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 20000,
+                    nextServiceKm: 25000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -80,10 +129,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '15/03/2024',
                     kmSinceLastService: 1500,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
@@ -96,10 +166,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '20/03/2024',
                     kmSinceLastService: 800,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 12000,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
@@ -112,11 +203,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'warning',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '01/03/2024',
                     kmSinceLastService: 4200,
                     nextServiceKm: 5000,
                     type: 'warning'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 18000,
+                    nextServiceKm: 20000,
+                    type: 'warning'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -128,10 +240,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '10/03/2024',
                     kmSinceLastService: 2000,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 5000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
@@ -144,11 +277,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'danger',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '05/02/2024',
                     kmSinceLastService: 5200,
                     nextServiceKm: 5000,
                     type: 'danger'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 22000,
+                    nextServiceKm: 25000,
+                    type: 'danger'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -160,10 +314,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '25/03/2024',
                     kmSinceLastService: 500,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 9000,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
@@ -176,11 +351,32 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'warning',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '15/03/2024',
                     kmSinceLastService: 3800,
                     nextServiceKm: 5000,
                     type: 'warning'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 16000,
+                    nextServiceKm: 20000,
+                    type: 'warning'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
+                    type: 'ok'
                 }
             }
         },
@@ -192,10 +388,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '20/03/2024',
                     kmSinceLastService: 1200,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 11000,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
@@ -208,10 +425,31 @@ document.addEventListener('DOMContentLoaded', function() {
             status: 'ok',
             maintenance: {
                 'aceite': {
-                    title: 'Cambio de Aceite',
+                    title: 'Aceite y Filtros',
                     lastDate: '10/03/2024',
                     kmSinceLastService: 2800,
                     nextServiceKm: 5000,
+                    type: 'ok'
+                },
+                'neumaticos': {
+                    title: 'Neumáticos',
+                    lastDate: '01/03/2024',
+                    kmSinceLastService: 13000,
+                    nextServiceKm: 15000,
+                    type: 'ok'
+                },
+                'distribucion': {
+                    title: 'Distribución',
+                    lastDate: '10/01/2024',
+                    kmSinceLastService: 48000,
+                    nextServiceKm: 50000,
+                    type: 'ok'
+                },
+                'bateria': {
+                    title: 'Batería',
+                    lastDate: '15/02/2024',
+                    kmSinceLastService: 8000,
+                    nextServiceKm: 10000,
                     type: 'ok'
                 }
             }
