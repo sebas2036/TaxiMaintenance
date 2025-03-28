@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+FLOTATAXI_Backups/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archivos del sistema
+.Trash
+.CFUserTextEncoding
+.vscode/
+.wdm/
+.zcompdump
+.zprofile
+.zsh_history
+.zsh_sessions/
+
+# Directorios personales
+/Applications/
+/Desktop/
+/Documents/
+/Downloads/
+/Library/
+/Movies/
+/Music/
+/Pictures/
+/Public/
+
+# Archivos de desarrollo
+.npm/
+.nvmrc
+.swift-pm/
+.viminfo
+.cursor/
+.gitconfig
+.idlerc/
+.lesshst
+
+# Archivos de entorno
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backup files
+*.backup
+*.swp 
