@@ -1,3 +1,17 @@
+/* Variables globales */
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --secondary-color: #6c757d;
+    --secondary-hover: #5a6268;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-gray: #f8f9fa;
+    --border-color: #ddd;
+    --text-color: #333;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -794,4 +808,125 @@ header h1 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Estilos del calendario */
+.date-picker {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: none;
+    padding: 10px;
+    min-width: 280px;
+}
+
+.date-picker.active {
+    display: block;
+}
+
+.date-picker .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.date-picker .header span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.date-picker .header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: var(--secondary-color);
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.date-picker .header button:hover {
+    background: var(--light-gray);
+    color: var(--text-color);
+}
+
+.date-picker .header button.prev-year,
+.date-picker .header button.next-year {
+    font-weight: bold;
+}
+
+.date-picker .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.date-picker .calendar .day-name {
+    text-align: center;
+    font-weight: 500;
+    color: var(--secondary-color);
+    font-size: 12px;
+    padding: 5px;
+}
+
+.date-picker .calendar .day {
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.date-picker .calendar .day:hover {
+    background: var(--light-gray);
+    color: var(--primary-color);
+}
+
+.date-picker .calendar .day.selected {
+    background: var(--primary-color);
+    color: white;
+}
+
+.date-picker .calendar .day.today {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.date-picker .calendar .day.other-month {
+    color: var(--secondary-color);
+}
+
+/* Estilos para fechas editables */
+.editable-date {
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.editable-date:hover {
+    background: var(--light-gray);
+}
+
+.editable-date.editing {
+    background: white;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+    padding: 4px 8px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    position: relative;
+    z-index: 10;
 } 
