@@ -2,13 +2,41 @@
 
 Sistema web para la gestión y seguimiento del mantenimiento de una flota de taxis.
 
-## Características
+## 🚕 Características
 
+- Vista de cuadrícula con todos los taxis
+- Estados de mantenimiento:
+  - 🟢 OK
+  - 🟡 Revisión
+  - 🔴 Urgente
+- Búsqueda por número de taxi
+- Panel de detalles al hacer clic
 - Gestión de vehículos
 - Seguimiento de mantenimiento
 - Panel de control en tiempo real
-- Búsqueda de taxis
 - Estadísticas y reportes
+
+## 🚀 Cómo Usar
+
+1. Abre el archivo `index.html` en tu navegador
+2. O inicia el servidor local:
+```bash
+python3 -m http.server 8000
+```
+3. Visita `http://localhost:8000`
+
+## 📁 Archivos
+
+- `index.html`: Página principal
+- `css/styles.css`: Estilos
+- `js/main.js`: Funcionalidad
+
+## 🔄 Commit Automático
+
+Para subir cambios automáticamente:
+
+1. Haz doble clic en `push-flota.command` en el escritorio
+2. Los cambios se subirán a GitHub automáticamente
 
 ## Requisitos
 
@@ -20,7 +48,7 @@ Sistema web para la gestión y seguimiento del mantenimiento de una flota de tax
 
 1. Clonar el repositorio:
 ```bash
-git clone [URL_DEL_REPOSITORIO]
+git clone https://github.com/sebas2036/TaxiMaintenance.git
 ```
 
 2. Instalar dependencias:
@@ -71,4 +99,4 @@ FLOTATAXI/
 
 ## Licencia
 
-Este proyecto está bajo la Licencia ISC. 
+Este proyecto está bajo la Licencia ISC.
