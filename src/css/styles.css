@@ -1,0 +1,973 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background: white;
+    padding: 15px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-bottom: 30px;
+    border-radius: 20px;
+}
+
+header h1 {
+    font-size: 2em;
+    color: var(--text-color);
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 30px;
+    padding: 5px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 300px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    width: 100%;
+    font-size: 0.9em;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+}
+
+.add-taxi-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.add-taxi-btn:hover {
+    transform: scale(1.1);
+}
+
+.taxi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.taxi-card {
+    background: white;
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    opacity: 1;
+    width: 160px;
+    height: 120px;
+    overflow: visible;
+}
+
+.taxi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.taxi-header {
+    background: #3498db;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.taxi-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+
+.taxi-content {
+    padding: 8px 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.taxi-info {
+    text-align: center;
+    margin: 2px 0;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.taxi-model {
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c3e50;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background: transparent;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.taxi-details {
+    font-size: 11px;
+    color: #7f8c8d;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+    position: relative;
+    padding: 0 4px;
+    margin-bottom: 4px;
+}
+
+.taxi-details span {
+    font-size: 11px;
+    font-weight: 500;
+    color: #2c3e50;
+    padding: 1px 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid transparent;
+    background: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.taxi-model:hover, .taxi-details span:hover {
+    background-color: #f8f9fa;
+    border-color: #bdc3c7;
+}
+
+.taxi-model.editing, .taxi-details span.editing {
+    background-color: white;
+    border: 1px solid #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+    padding: 4px 8px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.taxi-status {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-top: 4px;
+    position: relative;
+    z-index: 2;
+    min-width: 60px;
+    text-align: center;
+}
+
+.status-ok {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    box-shadow: 0 1px 3px rgba(46, 125, 50, 0.2);
+}
+
+.status-warning {
+    background-color: #fff3e0;
+    color: #ef6c00;
+    box-shadow: 0 1px 3px rgba(239, 108, 0, 0.2);
+}
+
+.status-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    box-shadow: 0 1px 3px rgba(198, 40, 40, 0.2);
+}
+
+.edit-btn, .delete-btn {
+    position: absolute;
+    top: 8px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: all 0.2s;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.edit-btn {
+    right: 32px;
+    color: #f39c12;
+}
+
+.delete-btn {
+    right: 8px;
+    color: #e74c3c;
+}
+
+.edit-btn:hover {
+    background-color: #f39c12;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.detail-panel {
+    position: fixed;
+    right: -600px;
+    top: 0;
+    width: 600px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: right 0.3s ease;
+}
+
+.detail-panel.active {
+    right: 0;
+}
+
+.panel-header {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #3498db;
+}
+
+.panel-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: white;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.panel-content {
+    padding: 12px;
+    overflow-y: auto;
+    height: calc(100vh - 65px);
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #f8f9fa;
+}
+
+.panel-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+    background-color: #3498db;
+    border-radius: 4px;
+    border: 2px solid #f8f9fa;
+}
+
+.info-section {
+    padding: 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    text-align: center;
+}
+
+.info-item label {
+    font-size: 12px;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+}
+
+.info-item span {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+    margin-top: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.maintenance-section {
+    margin-bottom: 12px;
+}
+
+.maintenance-section h3 {
+    font-size: 14px;
+    color: white;
+    margin: 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #3498db;
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.maintenance-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.maintenance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.maintenance-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.maintenance-title {
+    font-weight: 600;
+    color: #333;
+    text-decoration: underline;
+    text-decoration-color: #4CAF50;
+    text-decoration-thickness: 2px;
+}
+
+.maintenance-date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.maintenance-km {
+    font-size: 0.9em;
+    color: #666;
+    margin: 4px 0;
+}
+
+.progress-bar {
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    margin: 4px 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #dc3545;
+    transition: width 0.3s ease;
+}
+
+.progress-warning {
+    background: #ffc107;
+}
+
+.progress-ok {
+    background: #28a745;
+}
+
+.next-service {
+    font-size: 0.9em;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.action-buttons {
+    padding: 8px 12px;
+    background: white;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 6px;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    gap: 3px;
+}
+
+.primary-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+}
+
+.primary-btn:hover {
+    background: #0056b3;
+}
+
+.secondary-btn {
+    background: white;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.secondary-btn:hover {
+    background: #f8f9fa;
+}
+
+.taxi-brand, .taxi-year, .taxi-domain {
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.taxi-brand.editing, .taxi-year.editing, .taxi-domain.editing {
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.info-item .editable {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid transparent;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-item .editable:hover {
+    background-color: #f8f9fa;
+    border-color: #bdc3c7;
+}
+
+.info-item .editable.editing {
+    background-color: white;
+    border: 1px solid #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+    padding: 8px 12px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        width: 200px;
+    }
+    
+    .taxi-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .detail-panel {
+        width: 100%;
+    }
+}
+
+/* Estilos para el Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    max-width: 500px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+    margin: 20px auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.primary-btn {
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+    background-color: #283593;
+}
+
+.secondary-btn {
+    background-color: #f5f5f5;
+    color: #2c3e50;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.card-maintenance-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 0 4px;
+}
+
+.card-maintenance-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #f8f9fa;
+    width: 100%;
+}
+
+.card-maintenance-item.status-ok {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.card-maintenance-item.status-warning {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.card-maintenance-item.status-danger {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.maintenance-icon {
+    font-size: 8px;
+}
+
+.maintenance-name {
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos para el contenedor de tipo de mantenimiento */
+.maintenance-type-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.maintenance-type-container select {
+    flex: 1;
+}
+
+.add-type-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    padding: 0;
+    margin-left: 8px;
+}
+
+.add-type-btn:hover {
+    background-color: #27ae60;
+}
+
+.add-type-btn i {
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Ajustes para el modal de nuevo tipo de mantenimiento */
+#newMaintenanceTypeModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+#newMaintenanceTypeModal .modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#newMaintenanceTypeModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#newMaintenanceTypeModal .modal-body {
+    margin-bottom: 20px;
+}
+
+#newMaintenanceTypeModal .form-group {
+    margin-bottom: 15px;
+}
+
+#newMaintenanceTypeModal .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+#newMaintenanceTypeModal .form-control:focus {
+    outline: none;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+}
+
+#newMaintenanceTypeModal .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Estilos para el formulario de nuevo tipo de mantenimiento */
+.new-maintenance-type-form {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-row .form-group:last-child {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.form-row .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.form-row .form-control:focus {
+    outline: none;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+}
+
+.form-row .primary-btn,
+.form-row .secondary-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    height: 38px;
+}
+
+/* Estilos para campos editables en el modal */
+.form-control.editing {
+    background-color: #fff;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+    outline: none;
+}
+
+.form-control.editing:focus {
+    border-color: #1a237e;
+    box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+}
+
+/* Ajustes para los campos de kilómetros en el modal */
+#currentKm,
+#nextServiceKm {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#currentKm:hover,
+#nextServiceKm:hover {
+    background-color: #f8f9fa;
+}
+
+/* Estilos para el botón de nuevo mantenimiento */
+.maintenance-header button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.maintenance-header button:hover {
+    background-color: #45a049;
+} 

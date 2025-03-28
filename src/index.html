@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiMaintenance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TaxiMaintenance</h1>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar taxi...">
+                    <button>🔍</button>
+                </div>
+                <button class="add-taxi-btn">+</button>
+            </div>
+        </header>
+        
+        <main>
+            <div id="taxi-grid" class="taxi-grid"></div>
+        </main>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="detail-panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Detalles del Taxi</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="info-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Marca</label>
+                        <span class="taxi-brand editable">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Año</label>
+                        <span class="taxi-year editable">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Dominio</label>
+                        <span class="taxi-domain editable">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="maintenance-section">
+                <h3>Mantenimiento</h3>
+                <div class="maintenance-list">
+                    <!-- Los items de mantenimiento se agregarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="primary-btn" id="programMaintenance">
+                    <i class="fas fa-calendar-plus"></i>
+                    Programar Mantenimiento
+                </button>
+                <button class="secondary-btn" id="viewHistory">
+                    <i class="fas fa-history"></i>
+                    Ver Historial
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Programación de Mantenimiento -->
+    <div class="modal" id="maintenanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Programar Mantenimiento</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Mantenimiento</label>
+                    <select id="maintenanceType" class="form-control">
+                        <option value="aceite">Aceite y Filtros</option>
+                        <option value="neumaticos">Neumáticos</option>
+                        <option value="distribucion">Distribución</option>
+                        <option value="bateria">Batería</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="maintenanceDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Kilometraje Actual</label>
+                    <input type="number" id="currentKm" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Próximo Servicio (km)</label>
+                    <input type="number" id="nextServiceKm" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancelMaintenance">Cancelar</button>
+                <button class="primary-btn" id="saveMaintenance">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
