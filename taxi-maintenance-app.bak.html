@@ -1,0 +1,3386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiMaintenance - Control de Mantenimiento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .search-bar {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-bar input {
+            width: 100%;
+            min-width: 250px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .search-bar input:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #1a237e;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 100px;
+        }
+        .search-bar button:hover {
+            background-color: #283593;
+            transform: translateY(-1px);
+        }
+        .add-card-button {
+            padding: 10px 15px;
+            background-color: #2ecc71;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+        .add-card-button:hover {
+            background-color: #27ae60;
+        }
+        .button-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .taxi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .taxi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .taxi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .taxi-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .taxi-status {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            width: fit-content;
+            margin: 8px auto 0;
+        }
+        .status-ok {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .status-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+        .status-danger {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -600px;
+            width: 600px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .detail-panel.active {
+            right: 0;
+        }
+        .detail-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .detail-content {
+            padding: 20px;
+        }
+        .detail-section {
+            margin-bottom: 25px;
+        }
+        .detail-section h3 {
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            color: #2c3e50;
+        }
+        .maintenance-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .maintenance-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .maintenance-item-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .maintenance-item-date {
+            color: #777;
+            font-size: 14px;
+        }
+        .maintenance-item-km {
+            color: #777;
+            font-size: 14px;
+            display: block;
+            margin: 5px 0;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .maintenance-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .status-danger {
+            background-color: #fde8e8;
+            color: #e74c3c;
+        }
+        .status-warning {
+            background-color: #fef3e8;
+            color: #f39c12;
+        }
+        .status-ok {
+            background-color: #e8f6ef;
+            color: #2ecc71;
+        }
+        
+        .maintenance-chart {
+            height: 200px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .chart-bars {
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        .chart-bar {
+            width: 8%;
+            background-color: #3498db;
+            margin: 0 1%;
+            position: relative;
+            transition: height 0.5s;
+        }
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+        }
+        .maintenance-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .maintenance-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .primary-button {
+            background-color: #3498db;
+            color: white;
+        }
+        .secondary-button {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        
+        /* Estilos para edición */
+        .edit-mode .taxi-number,
+        .edit-mode .taxi-status {
+            display: none;
+        }
+        
+        .edit-form {
+            display: none;
+            padding: 10px;
+        }
+        
+        .edit-mode .edit-form {
+            display: block;
+        }
+        
+        .edit-form input,
+        .edit-form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .edit-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .save-button {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .cancel-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .edit-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #2c3e50;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .taxi-card:hover .edit-icon {
+            opacity: 1;
+        }
+        
+        /* Estilos para botón flotante de agregar */
+        .add-taxi-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #2ecc71;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-taxi-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* Estilos para botón de eliminar */
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .taxi-card:hover .delete-icon {
+            opacity: 1;
+        }
+        
+        /* Estilos para el modal de confirmación */
+        .confirm-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1100;
+            display: none;
+            text-align: center;
+        }
+        
+        .confirm-modal.active {
+            display: block;
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .confirm-button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .confirm-yes {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .confirm-no {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        /* Estilos para tarjetas administrativas */
+        .admin-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            padding: 0 20px;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .admin-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .admin-card-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .admin-card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .admin-card-content {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .admin-card-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .admin-card-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+        }
+
+        .admin-card-button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .admin-card-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Colores específicos para cada tarjeta administrativa */
+        .admin-card.seguros .admin-card-icon {
+            background-color: #e8f4fd;
+            color: #3498db;
+        }
+
+        .admin-card.observaciones .admin-card-icon {
+            background-color: #fef3e8;
+            color: #f39c12;
+        }
+
+        .admin-card.rto .admin-card-icon {
+            background-color: #e8f6ef;
+            color: #2ecc71;
+        }
+
+        .admin-card.servicios .admin-card-icon {
+            background-color: #fde8e8;
+            color: #e74c3c;
+        }
+
+        /* Estilos para la lista de seguros */
+        .seguros-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0 5px;
+        }
+
+        .seguro-item {
+            padding: 15px;
+            border-radius: 12px;
+            background-color: white;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f7;
+        }
+
+        .seguro-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-color: #e0e6ed;
+        }
+
+        .seguro-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .seguro-taxi {
+            font-weight: 600;
+            color: #1a237e;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .seguro-taxi::before {
+            content: "🚕";
+            font-size: 16px;
+        }
+
+        .seguro-fecha {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .seguro-fecha::before {
+            content: "📅";
+            font-size: 14px;
+        }
+
+        .seguro-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 15px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-proximo {
+            background-color: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .status-proximo::before {
+            content: "⚠️";
+            font-size: 14px;
+        }
+
+        .status-vigente {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-vigente::before {
+            content: "✅";
+            font-size: 14px;
+        }
+
+        .status-vencido {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status-vencido::before {
+            content: "❌";
+            font-size: 14px;
+        }
+
+        .seguros-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .seguros-header span:first-child {
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .seguros-count {
+            font-size: 12px;
+            color: #2ecc71;
+            background-color: #f0fdf4;
+            padding: 4px 8px;
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+            font-weight: 500;
+        }
+
+        .seguros-filtros {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filtro-button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            color: #64748b;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filtro-button:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .filtro-button.active {
+            background-color: #1a237e;
+            color: white;
+            border-color: #1a237e;
+        }
+
+        /* Estilos para la vista desplegable de seguros */
+        .seguros-expanded-view {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            z-index: 1100;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+            display: block;
+        }
+
+        .seguros-expanded-view.active {
+            right: 0;
+        }
+
+        .seguros-expanded-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .seguros-expanded-title {
+            font-size: 24px;
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seguros-expanded-title::before {
+            content: "🛡️";
+            font-size: 28px;
+        }
+
+        .seguros-expanded-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+
+        .seguros-expanded-close:hover {
+            color: #1a237e;
+        }
+
+        .seguros-expanded-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .seguros-expanded-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f7;
+        }
+
+        .stat-card-title {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .stat-card-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        .seguros-expanded-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .seguros-expanded-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .seguro-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f7;
+            transition: all 0.3s ease;
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .seguro-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .seguro-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .seguro-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .seguro-card-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .seguro-card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .seguro-card-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .seguro-card-info.editable {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .seguro-card-info.editable:hover {
+            background-color: #f1f5f9;
+        }
+
+        .seguro-card-info input[type="date"],
+        .seguro-card-info input[type="text"],
+        .seguro-card-info input[type="number"] {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            color: #64748b;
+            width: 100%;
+        }
+
+        .seguro-card-info input[type="date"] {
+            width: 140px;
+        }
+
+        .seguro-card-info input[type="number"] {
+            width: 100px;
+        }
+
+        .seguro-card-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .seguro-card-button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .seguro-card-button.primary {
+            background-color: #1a237e;
+            color: white;
+        }
+
+        .seguro-card-button.secondary {
+            background-color: #f1f5f9;
+            color: #1a237e;
+        }
+
+        .seguro-card-button:hover {
+            opacity: 0.9;
+        }
+
+        /* Estilos para los títulos de seguros */
+        .seguros-titles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .seguro-title {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            color: #1a237e;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .seguro-title:hover {
+            background: #eef2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .seguro-title.active {
+            background: #1a237e;
+            color: white;
+            border-color: #1a237e;
+        }
+
+        .admin-card-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-card-button:hover {
+            background-color: #283593;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para el modal de historial de pagos */
+        .historial-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1200;
+            display: none;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .historial-modal.active {
+            display: block;
+        }
+
+        .historial-close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .historial-close:hover {
+            background-color: #f1f5f9;
+            color: #1a237e;
+        }
+
+        .historial-header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eef2f7;
+            padding-right: 40px;
+        }
+
+        .historial-title {
+            font-size: 18px;
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 40px;
+        }
+
+        .historial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .historial-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .historial-fecha {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .historial-monto {
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .seguros-alertas {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .seguro-alerta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            color: #991b1b;
+            font-size: 13px;
+        }
+
+        .seguro-alerta .taxi-numero {
+            font-weight: 600;
+        }
+
+        .seguro-alerta .dias-restantes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .seguro-alerta .dias-restantes::before {
+            content: "⚠️";
+            font-size: 14px;
+        }
+
+        .admin-card.seguros {
+            position: relative;
+        }
+
+        .seguros-alertas {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .seguro-alerta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            color: #991b1b;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .seguro-alerta:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .seguro-alerta .taxi-numero {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .seguro-alerta .taxi-numero::before {
+            content: "🚕";
+            font-size: 14px;
+        }
+
+        .seguro-alerta .dias-restantes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .seguro-alerta .dias-restantes::before {
+            content: "⚠️";
+            font-size: 14px;
+        }
+
+        .seguros-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .seguros-count {
+            font-size: 12px;
+            color: #64748b;
+            background-color: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .seguro-card-info input,
+        .seguro-card-info select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1a237e;
+            background-color: white;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .seguro-card-info input:focus,
+        .seguro-card-info select:focus {
+            border-color: #1a237e;
+            box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.1);
+            outline: none;
+        }
+
+        .seguro-card-info.editable {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .seguro-card-info.editable:hover {
+            background-color: #f8fafc;
+        }
+
+        .seguro-card-info span:last-child {
+            font-weight: 500;
+            color: #1a237e;
+        }
+
+        .save-changes {
+            background-color: #10b981 !important;
+            color: white !important;
+            font-weight: 500 !important;
+        }
+
+        .save-changes:hover {
+            background-color: #059669 !important;
+        }
+
+        .seguro-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .seguro-card-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .seguro-card-button.primary {
+            background-color: #1a237e;
+            color: white;
+        }
+
+        .seguro-card-button.secondary {
+            background-color: #f1f5f9;
+            color: #1a237e;
+        }
+
+        .seguro-card-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Estilos para el modal de observaciones */
+        .observaciones-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1200;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .observaciones-modal.active {
+            display: block;
+        }
+
+        .observaciones-header {
+            background-color: #f39c12;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .observaciones-title {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .observaciones-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .observaciones-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .observaciones-content {
+            padding: 25px;
+        }
+
+        .observaciones-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .observaciones-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .observaciones-form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .observaciones-form-group select,
+        .observaciones-form-group textarea {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .observaciones-form-group select:focus,
+        .observaciones-form-group textarea:focus {
+            border-color: #f39c12;
+            box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.1);
+            outline: none;
+        }
+
+        .observaciones-form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .observaciones-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .observaciones-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .observaciones-button.primary {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .observaciones-button.primary:hover {
+            background-color: #e67e22;
+            transform: translateY(-1px);
+        }
+
+        .observaciones-button.secondary {
+            background-color: #f1f5f9;
+            color: #2c3e50;
+        }
+
+        .observaciones-button.secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .observaciones-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .observacion-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .observacion-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .observacion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .observacion-taxi {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .observacion-fecha {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .observacion-tipo {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .tipo-normal {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .tipo-urgente {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .observacion-texto {
+            color: #334155;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 40px; /* Agregar espacio para el botón de eliminar */
+            padding-right: 40px; /* Evitar que el texto se solape con el botón */
+        }
+
+        .observacion-delete {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            opacity: 1;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fef2f2;
+            width: 32px;
+            height: 32px;
+        }
+
+        .observacion-delete:hover {
+            background-color: #fee2e2;
+            transform: scale(1.1);
+        }
+
+        .observacion-item:hover .observacion-delete {
+            opacity: 1;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1300;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeInOut 3s forwards;
+        }
+
+        /* Estilos para el modal de RTO */
+        .rto-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1200;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .rto-modal.active {
+            display: block;
+        }
+
+        .rto-header {
+            background-color: #2ecc71;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rto-title {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .rto-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .rto-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .rto-content {
+            padding: 25px;
+        }
+
+        .rto-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .rto-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rto-form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .rto-form-group select,
+        .rto-form-group input,
+        .rto-form-group textarea {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .rto-form-group select:focus,
+        .rto-form-group input:focus,
+        .rto-form-group textarea:focus {
+            border-color: #2ecc71;
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.1);
+            outline: none;
+        }
+
+        .rto-form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .rto-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .rto-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .rto-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .rto-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .rto-taxi {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .rto-fecha {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .rto-estado {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .estado-vigente {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .estado-proximo {
+            background-color: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .estado-vencido {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .rto-detalles {
+            color: #334155;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 40px;
+            padding-right: 40px;
+        }
+
+        .rto-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rto-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .rto-button.primary {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .rto-button.primary:hover {
+            background-color: #27ae60;
+            transform: translateY(-1px);
+        }
+
+        .rto-button.secondary {
+            background-color: #f1f5f9;
+            color: #2c3e50;
+        }
+
+        .rto-button.secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .rto-delete {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            opacity: 1;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fef2f2;
+            width: 32px;
+            height: 32px;
+        }
+
+        .rto-delete:hover {
+            background-color: #fee2e2;
+            transform: scale(1.1);
+        }
+
+        /* Estilos para el modal de Servicios */
+        .servicios-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1200;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .servicios-modal.active {
+            display: block;
+        }
+
+        .servicios-header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .servicios-title {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .servicios-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .servicios-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .servicios-content {
+            padding: 25px;
+        }
+
+        .servicios-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .servicios-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .servicios-form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .servicios-form-group select,
+        .servicios-form-group input,
+        .servicios-form-group textarea {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .servicios-form-group select:focus,
+        .servicios-form-group input:focus,
+        .servicios-form-group textarea:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.1);
+            outline: none;
+        }
+
+        .servicios-form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .servicios-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .servicio-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .servicio-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .servicio-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .servicio-taxi {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .servicio-fecha {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .servicio-tipo {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .tipo-preventivo {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .tipo-correctivo {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .tipo-revision {
+            background-color: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .servicio-detalles {
+            color: #334155;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 40px;
+            padding-right: 40px;
+        }
+
+        .servicio-kilometraje {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Estilos para el modal de Agenda */
+        .agenda-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1200;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .agenda-modal.active {
+            display: block;
+        }
+
+        .agenda-header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .agenda-title {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .agenda-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .agenda-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .agenda-content {
+            padding: 25px;
+        }
+
+        .agenda-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .agenda-filter {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .agenda-filter.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .agenda-filter:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .agenda-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .agenda-day {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 120px;
+            position: relative;
+        }
+
+        .agenda-day.today {
+            background: #ebf8ff;
+            border-color: #3498db;
+        }
+
+        .agenda-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .agenda-date {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .agenda-weekday {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .agenda-events {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .agenda-event {
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .agenda-event.rto {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .agenda-event.servicio-preventivo {
+            background-color: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .agenda-event.servicio-correctivo {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .agenda-event.servicio-revision {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .agenda-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .agenda-event-icon {
+            font-size: 16px;
+        }
+
+        .agenda-event-text {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .agenda-month-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .agenda-month-button {
+            background: none;
+            border: none;
+            color: #3498db;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .agenda-month-button:hover {
+            background-color: #ebf8ff;
+        }
+
+        .agenda-current-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .admin-card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-card-button,
+        .ver-agenda-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .ver-agenda-button {
+            background-color: #2ecc71;
+        }
+
+        .admin-card-button:hover,
+        .ver-agenda-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .ver-agenda-button:hover {
+            background-color: #27ae60;
+        }
+
+        /* Estilos para el número de taxi editable */
+        .editable-number {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .editable-number:hover::after {
+            content: "✎";
+            position: absolute;
+            top: 0;
+            right: -15px;
+            font-size: 12px;
+            color: #1a237e;
+        }
+
+        .edit-number-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .edit-number-input {
+            width: 60px;
+            text-align: center;
+            padding: 3px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .save-number-btn, .cancel-number-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .save-number-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .cancel-number-btn {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>TaxiMaintenance</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar por número de taxi...">
+            <button>Buscar</button>
+            <button class="add-card-button">
+                <span class="button-icon">+</span>
+                Agregar Taxi
+            </button>
+        </div>
+
+        <div class="admin-cards">
+            <!-- Tarjeta de Seguros -->
+            <div class="admin-card seguros">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">🛡️</div>
+                    <h3 class="admin-card-title">Gestión de Seguros</h3>
+                </div>
+                <div class="admin-card-content">
+                    <div class="seguros-header">
+                        <span>Seguros Próximos a Vencer</span>
+                        <span class="seguros-count">3 días o menos</span>
+                    </div>
+                    <div class="seguros-alertas">
+                        <!-- Las alertas se agregarán dinámicamente -->
+                    </div>
+                </div>
+                <div class="admin-card-footer">
+                    <button class="admin-card-button" id="expand-seguros">Ver Todos los Taxis</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Observaciones -->
+            <div class="admin-card observaciones">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">📝</div>
+                    <h3 class="admin-card-title">Observaciones Generales</h3>
+                </div>
+                <div class="admin-card-content">
+                    <div class="observaciones-stats">
+                        <div class="observacion-stat">
+                            <span class="stat-value">8</span>
+                            <span class="stat-label">Observaciones activas</span>
+                        </div>
+                        <div class="observacion-stat">
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">Urgentes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-card-footer">
+                    <button class="admin-card-button" id="observaciones-button">Gestionar Observaciones</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de RTO -->
+            <div class="admin-card rto">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">🔍</div>
+                    <h3 class="admin-card-title">RTO</h3>
+                </div>
+                <div class="admin-card-content">
+                    <ul>
+                        <li>Vigentes: 6</li>
+                        <li>A vencer este mes: 2</li>
+                        <li>Vencidos: 0</li>
+                    </ul>
+                    <div class="admin-card-status">Próxima revisión: 15 días</div>
+                </div>
+                <div class="admin-card-footer">
+                    <button class="admin-card-button" id="rto-button">Gestionar RTO</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Agenda -->
+            <div class="admin-card agenda">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">📅</div>
+                    <h3 class="admin-card-title">Agenda</h3>
+                </div>
+                <div class="admin-card-content">
+                    <div class="agenda-preview">
+                        <div class="agenda-preview-date">Abril 2024</div>
+                        <div class="agenda-preview-events">
+                            <div class="agenda-preview-event">
+                                <span class="event-day">15</span>
+                                <span class="event-desc">RTO TX-1001</span>
+                            </div>
+                            <div class="agenda-preview-event">
+                                <span class="event-day">22</span>
+                                <span class="event-desc">Mant. TX-1004</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-card-footer">
+                    <button class="admin-card-button ver-agenda-button">Ver Agenda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="taxi-grid">
+            <!-- Las tarjetas de taxi se agregarán dinámicamente -->
+        </div>
+    </div>
+
+    <button class="add-taxi-button">+</button>
+
+    <div class="confirm-modal">
+        <h3>¿Estás seguro?</h3>
+        <p>¿Deseas eliminar este taxi del sistema?</p>
+        <div class="confirm-buttons">
+            <button class="confirm-button confirm-yes">Sí, eliminar</button>
+            <button class="confirm-button confirm-no">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="detail-panel">
+        <div class="detail-header">
+            <h2>Detalles del Taxi <span id="taxi-id"></span></h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="detail-content">
+            <div class="detail-section">
+                <h3>Información General</h3>
+                <p><strong>Modelo:</strong> <span id="taxi-model">Toyota Prius</span></p>
+                <p><strong>Año:</strong> <span id="taxi-year">2023</span></p>
+                <p><strong>Conductor actual:</strong> <span id="taxi-driver">Carlos Mendoza</span></p>
+                <p><strong>Kilometraje total:</strong> <span id="taxi-km">45,387 km</span></p>
+            </div>
+
+            <div class="estado-mantenimiento">
+                <h3>Estado de Mantenimiento</h3>
+                
+                <!-- Cambio de Aceite -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Cambio de Aceite</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="aceite-ultimo">12/02/2025</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                    </div>
+                    </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="aceite-km">8,750</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 87%; background-color: #e74c3c;"></div>
+                    </div>
+                    <div class="maintenance-status status-danger editable">
+                        Programar en <span id="aceite-proximo">1,250</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                </div>
+                
+                <!-- Filtro de Aire -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Filtro de Aire</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="filtro-ultimo">05/01/2025</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                    </div>
+                    </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="filtro-km">12,345</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 62%; background-color: #f39c12;"></div>
+                    </div>
+                    <div class="maintenance-status status-warning editable">
+                        Programar en <span id="filtro-proximo">7,655</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                </div>
+                
+                <!-- Frenos -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Frenos</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="frenos-ultimo">10/03/2025</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                    </div>
+                    </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="frenos-km">2,134</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 21%; background-color: #2ecc71;"></div>
+                    </div>
+                    <div class="maintenance-status status-ok editable">
+                        Programar en <span id="frenos-proximo">27,866</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                </div>
+                
+                <!-- Neumáticos -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Neumáticos</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="neumaticos-ultimo">15/12/2024</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                    </div>
+                    </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="neumaticos-km">15,672</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 39%; background-color: #2ecc71;"></div>
+                    </div>
+                    <div class="maintenance-status status-ok editable">
+                        Programar en <span id="neumaticos-proximo">24,328</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                </div>
+            </div>
+
+                <!-- Batería -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Batería</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="bateria-ultimo">20/01/2025</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                        </div>
+                        </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="bateria-km">45,000</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                        </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 90%; background-color: #f39c12;"></div>
+                        </div>
+                    <div class="maintenance-status status-warning editable">
+                        Programar en <span id="bateria-proximo">5,000</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                        </div>
+                        </div>
+
+                <!-- Correa de Distribución -->
+                <div class="maintenance-item">
+                    <div class="maintenance-item-header">
+                        <span class="maintenance-item-title">Correa de Distribución</span>
+                        <div class="maintenance-item-date editable">
+                            Último: <span id="correa-ultimo">15/01/2025</span>
+                            <input type="date" class="edit-input" style="display: none;">
+                        </div>
+                        </div>
+                    <div class="maintenance-item-km editable">
+                        <span id="correa-km">53,000</span> km desde el último cambio
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 88%; background-color: #f39c12;"></div>
+                    </div>
+                    <div class="maintenance-status status-warning editable">
+                        Programar en <span id="correa-proximo">7,000</span> km
+                        <input type="number" class="edit-input" style="display: none;" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="maintenance-buttons">
+                <button class="maintenance-button primary-button">Programar Mantenimiento</button>
+                <button class="maintenance-button secondary-button">Ver Historial Completo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agregar la vista expandida de seguros -->
+    <div class="seguros-expanded-view">
+        <div class="seguros-expanded-header">
+            <h2 class="seguros-expanded-title">Gestión de Seguros</h2>
+            <button class="seguros-expanded-close">&times;</button>
+        </div>
+        <div class="seguros-expanded-content">
+            <div class="seguros-expanded-stats">
+                <div class="stat-card">
+                    <div class="stat-card-title">Seguros Vigentes</div>
+                    <div class="stat-card-value">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Próximos a Vencer</div>
+                    <div class="stat-card-value">2</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Vencidos</div>
+                    <div class="stat-card-value">0</div>
+                </div>
+            </div>
+            <div class="seguros-expanded-filters">
+                <button class="filtro-button active">Todos</button>
+                <button class="filtro-button">Próximos</button>
+                <button class="filtro-button">Vencidos</button>
+            </div>
+            <div class="seguros-expanded-list">
+                <!-- Tarjetas de seguros expandidas -->
+                <div class="seguro-card">
+                    <div class="seguro-card-header">
+                        <div class="seguro-card-title">TX-1001</div>
+                        <span class="seguro-card-status status-proximo">Vence en 15 días</span>
+                    </div>
+                    <div class="seguro-card-content">
+                        <div class="seguro-card-info editable" data-type="fecha">
+                            <span>📅 Vence:</span>
+                            <input type="date" value="2024-04-15" style="display: none;">
+                            <span class="fecha-text">15/04/2024</span>
+                        </div>
+                        <div class="seguro-card-info">
+                            <span>💰 Monto: $1,500</span>
+                        </div>
+                        <div class="seguro-card-info">
+                            <span>🏢 Aseguradora: Seguros XYZ</span>
+                        </div>
+                    </div>
+                    <div class="seguro-card-actions">
+                        <button class="seguro-card-button primary">Renovar</button>
+                        <button class="seguro-card-button secondary">Ver Detalles</button>
+                        <button class="seguro-card-button delete-seguro" style="background-color: #ef4444;">Eliminar</button>
+                    </div>
+                </div>
+                <!-- Repetir para otros seguros -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Agregar el modal de historial al final del body -->
+    <div class="historial-modal">
+        <div class="historial-header">
+            <h3 class="historial-title">Historial de Pagos de Seguro</h3>
+            <button class="historial-close" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="historial-list">
+            <!-- Los items se agregarán dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Agregar el modal de observaciones -->
+    <div class="observaciones-modal">
+        <div class="observaciones-header">
+            <h3 class="observaciones-title">Observaciones Generales</h3>
+            <button class="observaciones-close">&times;</button>
+        </div>
+        <div class="observaciones-content">
+            <form class="observaciones-form">
+                <div class="observaciones-form-group">
+                    <label for="observacion-taxi">Vehículo</label>
+                    <select id="observacion-taxi" required>
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
+                <div class="observaciones-form-group">
+                    <label for="observacion-tipo">Tipo de Observación</label>
+                    <select id="observacion-tipo" required>
+                        <option value="normal">Normal</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+                <div class="observaciones-form-group">
+                    <label for="observacion-texto">Descripción</label>
+                    <textarea id="observacion-texto" placeholder="Ingrese la observación..." required></textarea>
+                </div>
+                <div class="observaciones-buttons">
+                    <button type="submit" class="observaciones-button primary">Guardar</button>
+                    <button type="button" class="observaciones-button secondary observaciones-cancel">Cancelar</button>
+                </div>
+            </form>
+            <div class="observaciones-list">
+                <!-- Las observaciones se agregarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Agregar el modal de RTO -->
+    <div class="rto-modal">
+        <div class="rto-header">
+            <h3 class="rto-title">Gestión de RTO</h3>
+            <button class="rto-close">&times;</button>
+        </div>
+        <div class="rto-content">
+            <form class="rto-form">
+                <div class="rto-form-group">
+                    <label for="rto-taxi">Vehículo</label>
+                    <select id="rto-taxi" required>
+                        <!-- Se llenará dinámicamente -->
+                    </select>
+                </div>
+                <div class="rto-form-group">
+                    <label for="rto-fecha">Fecha de Vencimiento</label>
+                    <input type="date" id="rto-fecha" required>
+                </div>
+                <div class="rto-form-group">
+                    <label for="rto-lugar">Lugar de Realización</label>
+                    <input type="text" id="rto-lugar" placeholder="Ingrese el lugar donde se realizará la RTO" required>
+                </div>
+                <div class="rto-form-group">
+                    <label for="rto-observaciones">Observaciones</label>
+                    <textarea id="rto-observaciones" placeholder="Ingrese observaciones adicionales"></textarea>
+                </div>
+                <div class="rto-buttons">
+                    <button type="submit" class="rto-button primary">Guardar</button>
+                    <button type="button" class="rto-button secondary rto-cancel">Cancelar</button>
+                </div>
+            </form>
+            <div class="rto-list">
+                <!-- Las RTOs se agregarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Agregar el modal de Agenda -->
+    <div class="agenda-modal">
+        <div class="agenda-header">
+            <h3 class="agenda-title">Agenda de Mantenimiento</h3>
+            <button class="agenda-close">&times;</button>
+        </div>
+        <div class="agenda-content">
+            <div class="agenda-month-navigation">
+                <button class="agenda-month-button prev-month">←</button>
+                <span class="agenda-current-month"></span>
+                <button class="agenda-month-button next-month">→</button>
+            </div>
+            <div class="agenda-filters">
+                <button class="agenda-filter active" data-filter="todos">Todos</button>
+                <button class="agenda-filter" data-filter="rto">RTO</button>
+                <button class="agenda-filter" data-filter="preventivo">Mantenimiento Preventivo</button>
+                <button class="agenda-filter" data-filter="correctivo">Mantenimiento Correctivo</button>
+                <button class="agenda-filter" data-filter="revision">Revisión General</button>
+            </div>
+            <div class="agenda-calendar">
+                <!-- Los días y eventos se agregarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cargar módulos JavaScript -->
+    <script src="js/modules/utils.js"></script>
+    <script src="js/modules/taxi.js"></script>
+    <script src="js/modules/seguros.js"></script>
+    <script src="js/modules/rto.js"></script>
+    <script src="js/modules/observaciones.js"></script>
+    <script src="js/modules/agenda.js"></script>
+    <script src="js/modules/servicios.js"></script>
+    <script src="js/modules/historial.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Variables globales
+        const elements = {
+            detailPanel: document.querySelector('.detail-panel'),
+            detailClose: document.querySelector('.close-btn'),
+            detailTaxiNumber: document.querySelector('.detail-header h2'),
+            overlay: document.querySelector('.overlay'),
+            segurosExpandedView: document.querySelector('.seguros-expanded-view'),
+            segurosExpandedClose: document.querySelector('.seguros-expanded-close'),
+            expandSegurosButton: document.getElementById('expand-seguros'),
+            modales: {
+                historial: document.querySelector('.historial-modal'),
+                observaciones: document.querySelector('.observaciones-modal'),
+                rto: document.querySelector('.rto-modal'),
+                servicios: document.querySelector('.servicios-modal'),
+                agenda: document.querySelector('.agenda-modal'),
+                confirmacion: document.querySelector('.confirm-modal')
+            }
+        };
+
+        // Datos de ejemplo para taxis
+        const taxisDisponibles = [
+            { id: 'TX001', number: 'TX001', status: 'ok' },
+            { id: 'TX002', number: 'TX002', status: 'warning' },
+            { id: 'TX003', number: 'TX003', status: 'danger' },
+            { id: 'TX004', number: 'TX004', status: 'ok' },
+            { id: 'TX005', number: 'TX005', status: 'warning' },
+            { id: 'TX006', number: 'TX006', status: 'ok' },
+            { id: 'TX007', number: 'TX007', status: 'danger' },
+            { id: 'TX008', number: 'TX008', status: 'ok' }
+        ];
+
+        // Objeto para almacenar datos de seguros por taxi
+        const segurosData = {};
+
+        // Función para cerrar todos los modales
+        function closeAllModals() {
+            // Cerrar todos los tipos de modales
+            const modalesAbiertos = document.querySelectorAll('.modal.active, .rto-modal.active, .servicios-modal.active, .agenda-modal.active, .historial-modal.active, .detail-panel.active, .seguros-expanded-view.active, .observaciones-modal.active');
+            modalesAbiertos.forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            // Remover overlay
+            if (elements.overlay) {
+                elements.overlay.classList.remove('active');
+            }
+            
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
+        }
+
+        // Función para abrir un modal específico
+        function openModal(modalElement) {
+            if (!modalElement) return;
+            
+            // Cerrar todos los modales primero
+            closeAllModals();
+            
+            // Abrir el modal específico
+            modalElement.classList.add('active');
+            if (elements.overlay) {
+                elements.overlay.classList.add('active');
+            }
+            
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners para cerrar modales
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                }
+            });
+
+            // Cerrar al hacer clic en el overlay
+            if (elements.overlay) {
+                elements.overlay.addEventListener('click', (e) => {
+                    if (e.target === elements.overlay) {
+                        closeAllModals();
+                    }
+                });
+            }
+
+            // Event listeners para botones de cierre
+            if (elements.detailClose) {
+                elements.detailClose.addEventListener('click', closeAllModals);
+            }
+
+            if (elements.segurosExpandedClose) {
+                elements.segurosExpandedClose.addEventListener('click', closeAllModals);
+            }
+
+            // Agregar listener específico para el botón de cierre de RTO (X)
+            const rtoCloseBtn = document.querySelector('.rto-close');
+            if (rtoCloseBtn) {
+                rtoCloseBtn.addEventListener('click', function() {
+                    const rtoModal = document.querySelector('.rto-modal');
+                    if (rtoModal) {
+                        rtoModal.classList.remove('active');
+                        if (elements.overlay) {
+                            elements.overlay.classList.remove('active');
+                        }
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Event listeners para botones de cancelar
+            document.querySelectorAll('.cancel-button, .observaciones-cancel, .rto-cancel').forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+
+            // Event listeners para abrir modales
+            if (elements.expandSegurosButton) {
+                elements.expandSegurosButton.addEventListener('click', () => {
+                    openModal(elements.segurosExpandedView);
+                    
+                    // Obtener todos los taxis
+                    const taxiCards = document.querySelectorAll('.taxi-card');
+                    const segurosList = elements.segurosExpandedView.querySelector('.seguros-expanded-list');
+                    
+                    // Limpiar la lista actual
+                    segurosList.innerHTML = '';
+                    
+                    // Agregar todas las tarjetas con datos persistentes
+                    taxiCards.forEach(card => {
+                        const taxiNumber = card.querySelector('.taxi-number').textContent;
+                        
+                        // Crear o utilizar los datos existentes
+                        if (!segurosData[taxiNumber]) {
+                            // Inicializar datos por primera vez
+                            const fechaVencimiento = new Date();
+                            fechaVencimiento.setDate(fechaVencimiento.getDate() + Math.floor(Math.random() * 30) + 1);
+                            
+                            segurosData[taxiNumber] = {
+                                fechaVencimiento: fechaVencimiento,
+                                monto: 1500,
+                                aseguradora: 'Seguros XYZ',
+                                poliza: 'POL-' + Math.floor(1000000 + Math.random() * 9000000),
+                                cobertura: 'Total'
+                            };
+                        }
+                        
+                        // Usar los datos almacenados
+                        const datos = segurosData[taxiNumber];
+                        const diasRestantes = Math.ceil((datos.fechaVencimiento - new Date()) / (1000 * 60 * 60 * 24));
+                        
+                        // Determinar estado
+                        let estadoClase = 'status-vigente';
+                        if (diasRestantes <= 3) {
+                            estadoClase = 'status-vencido';
+                        } else if (diasRestantes <= 15) {
+                            estadoClase = 'status-proximo';
+                        }
+                        
+                        const seguroCard = document.createElement('div');
+                        seguroCard.className = 'seguro-card';
+                        seguroCard.setAttribute('data-taxi', taxiNumber);
+                        
+                        seguroCard.innerHTML = `
+                            <div class="seguro-card-header">
+                                <div class="seguro-card-title">${taxiNumber}</div>
+                                <span class="seguro-card-status ${estadoClase}">Vence en ${diasRestantes} días</span>
+                            </div>
+                            <div class="seguro-card-content">
+                                <div class="seguro-card-info editable" data-type="fecha">
+                                    <span>📅 Vence:</span>
+                                    <input type="date" value="${datos.fechaVencimiento.toISOString().split('T')[0]}" style="display: none;">
+                                    <span class="fecha-text">${datos.fechaVencimiento.toLocaleDateString('es-ES', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric'
+                                    })}</span>
+                                </div>
+                                <div class="seguro-card-info editable" data-type="monto">
+                                    <span>💰 Monto:</span>
+                                    <input type="number" value="${datos.monto}" style="display: none;">
+                                    <span class="monto-text">$${datos.monto.toLocaleString()}</span>
+                                </div>
+                                <div class="seguro-card-info editable" data-type="aseguradora">
+                                    <span>🏢 Aseguradora:</span>
+                                    <input type="text" value="${datos.aseguradora}" style="display: none;">
+                                    <span class="aseguradora-text">${datos.aseguradora}</span>
+                                </div>
+                                <div class="seguro-card-info editable" data-type="poliza">
+                                    <span>📄 Nº Póliza:</span>
+                                    <input type="text" value="${datos.poliza}" style="display: none;">
+                                    <span class="poliza-text">${datos.poliza}</span>
+                                </div>
+                                <div class="seguro-card-info editable" data-type="cobertura">
+                                    <span>🛡️ Cobertura:</span>
+                                    <select style="display: none;">
+                                        <option value="total" ${datos.cobertura === 'Total' ? 'selected' : ''}>Total</option>
+                                        <option value="parcial" ${datos.cobertura === 'Parcial' ? 'selected' : ''}>Parcial</option>
+                                        <option value="basica" ${datos.cobertura === 'Básica' ? 'selected' : ''}>Básica</option>
+                        </select>
+                                    <span class="cobertura-text">${datos.cobertura}</span>
+                        </div>
+                            </div>
+                            <div class="seguro-card-actions">
+                                <button class="seguro-card-button primary">Renovar</button>
+                                <button class="seguro-card-button secondary">Ver Detalles</button>
+                                <button class="seguro-card-button save-changes" style="background-color: #10b981;">Guardar Cambios</button>
+                            </div>
+                        `;
+                        
+                        // Agregar la tarjeta a la lista
+                        segurosList.appendChild(seguroCard);
+                        
+                        // Configurar campos editables
+                        const editableFields = seguroCard.querySelectorAll('.seguro-card-info.editable');
+                        editableFields.forEach(field => {
+                            const input = field.querySelector('input, select');
+                            const text = field.querySelector('span:last-child');
+                            
+                            // Mostrar input al hacer clic en el campo
+                            field.addEventListener('click', () => {
+                                input.style.display = 'block';
+                                text.style.display = 'none';
+                                input.focus();
+                            });
+                            
+                            // Actualizar texto al cambiar el input
+                            input.addEventListener('change', () => {
+                                if (field.dataset.type === 'fecha') {
+                                    const fecha = new Date(input.value);
+                                    text.textContent = fecha.toLocaleDateString('es-ES', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric'
+                                    });
+                                } else if (field.dataset.type === 'monto') {
+                                    text.textContent = `$${parseInt(input.value).toLocaleString()}`;
+                                } else {
+                                    text.textContent = input.value;
+                                }
+                            });
+                            
+                            // Ocultar input al perder foco
+                            input.addEventListener('blur', () => {
+                                input.style.display = 'none';
+                                text.style.display = 'block';
+                            });
+                        });
+                        
+                        // Configurar botón de guardar cambios
+                        const saveChangesButton = seguroCard.querySelector('.save-changes');
+                        saveChangesButton.addEventListener('click', () => {
+                            const taxiNumber = seguroCard.getAttribute('data-taxi');
+                            const campos = segurosData[taxiNumber];
+                            
+                            // Actualizar datos con los valores actuales
+                            const fechaInput = seguroCard.querySelector('[data-type="fecha"] input');
+                            campos.fechaVencimiento = new Date(fechaInput.value);
+                            
+                            const montoInput = seguroCard.querySelector('[data-type="monto"] input');
+                            campos.monto = parseInt(montoInput.value);
+                            
+                            const aseguradoraInput = seguroCard.querySelector('[data-type="aseguradora"] input');
+                            campos.aseguradora = aseguradoraInput.value;
+                            
+                            const polizaInput = seguroCard.querySelector('[data-type="poliza"] input');
+                            campos.poliza = polizaInput.value;
+                            
+                            const coberturaInput = seguroCard.querySelector('[data-type="cobertura"] select');
+                            campos.cobertura = coberturaInput.options[coberturaInput.selectedIndex].text;
+                            
+                            // Actualizar estado de vencimiento
+                            const diasRestantes = Math.ceil((campos.fechaVencimiento - new Date()) / (1000 * 60 * 60 * 24));
+                            const statusSpan = seguroCard.querySelector('.seguro-card-status');
+                            statusSpan.textContent = `Vence en ${diasRestantes} días`;
+                            
+                            if (diasRestantes <= 3) {
+                                statusSpan.className = 'seguro-card-status status-vencido';
+                            } else if (diasRestantes <= 15) {
+                                statusSpan.className = 'seguro-card-status status-proximo';
+                            } else {
+                                statusSpan.className = 'seguro-card-status status-vigente';
+                            }
+                            
+                            // Mostrar mensaje de éxito
+                            alert('Cambios guardados correctamente');
+                        });
+                        
+                        // Configurar el botón de renovar
+                        const renovarButton = seguroCard.querySelector('.seguro-card-button.primary');
+                        renovarButton.addEventListener('click', () => {
+                            const taxiNumber = seguroCard.getAttribute('data-taxi');
+                            const campos = segurosData[taxiNumber];
+                            
+                            // Renovar por 1 año
+                            const nuevaFecha = new Date();
+                            nuevaFecha.setMonth(nuevaFecha.getMonth() + 12);
+                            campos.fechaVencimiento = nuevaFecha;
+                            
+                            // Actualizar interfaz
+                            const fechaInput = seguroCard.querySelector('[data-type="fecha"] input');
+                            fechaInput.value = nuevaFecha.toISOString().split('T')[0];
+                            
+                            const fechaText = seguroCard.querySelector('.fecha-text');
+                            fechaText.textContent = nuevaFecha.toLocaleDateString('es-ES', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            });
+                            
+                            const statusSpan = seguroCard.querySelector('.seguro-card-status');
+                            statusSpan.textContent = 'Vigente';
+                            statusSpan.className = 'seguro-card-status status-vigente';
+                            
+                            // Mostrar mensaje de éxito
+                            alert('Seguro renovado correctamente');
+                        });
+                        
+                        // Configurar el botón de ver detalles (aquí puedes implementar la funcionalidad que necesites)
+                        const verDetallesButton = seguroCard.querySelector('.seguro-card-button.secondary');
+                        verDetallesButton.addEventListener('click', () => {
+                            alert(`Ver detalles completos del seguro para ${taxiNumber}`);
+                        });
+                    });
+                });
+            }
+
+            // Event listeners para las tarjetas administrativas
+            document.querySelectorAll('.admin-card-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetModal = button.getAttribute('data-target');
+                    if (targetModal) {
+                        const modal = document.querySelector(`.${targetModal}`);
+                        if (modal) {
+                            openModal(modal);
+                        }
+                    }
+                });
+            });
+
+            // Event listener para el botón de agenda
+            const verAgendaBtn = document.querySelector('.ver-agenda-button');
+            if (verAgendaBtn && elements.modales.agenda) {
+                verAgendaBtn.addEventListener('click', () => {
+                    openModal(elements.modales.agenda);
+                });
+            }
+
+            // Event listeners para abrir modales desde botones específicos
+            const observacionesButton = document.querySelector('.admin-card.observaciones .admin-card-button');
+            if (observacionesButton) {
+                observacionesButton.addEventListener('click', () => {
+                    openModal(elements.modales.observaciones);
+                });
+            }
+
+            const rtoButton = document.querySelector('.admin-card.rto .admin-card-button');
+            if (rtoButton) {
+                rtoButton.addEventListener('click', () => {
+                    openModal(elements.modales.rto);
+                });
+            }
+
+            const serviciosButton = document.querySelector('.admin-card.servicios .admin-card-button');
+            if (serviciosButton) {
+                serviciosButton.addEventListener('click', () => {
+                    openModal(elements.modales.servicios);
+                });
+            }
+
+            const historialButton = document.querySelector('.admin-card.historial .admin-card-button');
+            if (historialButton) {
+                historialButton.addEventListener('click', () => {
+                    openModal(elements.modales.historial);
+                });
+            }
+
+            // Prevenir que los clics dentro de los modales cierren los modales
+            document.querySelectorAll('.modal, .rto-modal, .servicios-modal, .agenda-modal, .historial-modal, .detail-panel, .seguros-expanded-view').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            });
+
+            // Event listeners para las tarjetas de taxi
+            document.querySelectorAll('.taxi-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Ya no necesitamos comprobar si el clic fue en un botón de tarjeta
+                    // if (e.target.closest('.taxi-card-button')) return;
+                    
+                    const taxiId = card.getAttribute('data-taxi-id');
+                    if (taxiId) {
+                        showTaxiDetails(taxiId);
+                    }
+                });
+            });
+
+            // Cerrar modal de observaciones
+            const observacionesCloseBtn = document.querySelector('.observaciones-close');
+            if (observacionesCloseBtn) {
+                observacionesCloseBtn.addEventListener('click', function() {
+                    const observacionesModal = document.querySelector('.observaciones-modal');
+                    if (observacionesModal) {
+                        observacionesModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        });
+
+        // Función para abrir el detalle de un taxi
+        function showTaxiDetails(taxiId) {
+            // Buscar el taxi entre los disponibles
+            const taxi = taxisDisponibles.find(t => t.id === taxiId);
+            if (!taxi) return;
+            
+            // Establecer información en el panel de detalle
+            if (elements.detailTaxiNumber) {
+                elements.detailTaxiNumber.textContent = taxi.number;
+            }
+            
+            // Mostrar panel de detalle
+            if (elements.detailPanel) {
+                openModal(elements.detailPanel);
+            }
+            
+            // Acá se podría agregar más lógica para cargar datos específicos del taxi
+        }
+
+        // Inicializar la aplicación
+        initializeApp();
+
+        // Función para inicializar la aplicación
+        function initializeApp() {
+            // Cargar taxis en la interfaz
+            cargarTaxis();
+            
+            // Configurar eventos globales
+            setupGlobalEvents();
+            
+            console.log('Aplicación TaxiMaintenance inicializada correctamente');
+        }
+        
+        // Cargar taxis en la interfaz
+        function cargarTaxis() {
+            const taxiGrid = document.querySelector('.taxi-grid');
+            if (!taxiGrid) return;
+            
+            // Limpiar grid actual
+            taxiGrid.innerHTML = '';
+            
+            // Crear tarjetas para cada taxi
+            taxisDisponibles.forEach(taxi => {
+                const card = document.createElement('div');
+                card.className = 'taxi-card';
+                card.setAttribute('data-taxi-id', taxi.id);
+                
+                // Determinar clase de estado
+                let statusClass = 'status-ok';
+                if (taxi.status === 'warning') {
+                    statusClass = 'status-warning';
+                } else if (taxi.status === 'danger') {
+                    statusClass = 'status-danger';
+                }
+                
+                card.innerHTML = `
+                    <div class="taxi-number editable-number">${taxi.number}</div>
+                    <span class="taxi-status ${statusClass}">
+                        ${taxi.status === 'ok' ? 'OK' : taxi.status === 'warning' ? 'Atención' : 'Urgente'}
+                    </span>
+                    <div class="edit-number-container" style="display: none;">
+                        <input type="text" class="edit-number-input" maxlength="4" value="${taxi.number.replace(/\D/g, '')}">
+                        <button class="save-number-btn">✓</button>
+                        <button class="cancel-number-btn">✗</button>
+                    </div>
+                `;
+                
+                taxiGrid.appendChild(card);
+                
+                // Configurar la edición del número de taxi
+                setupTaxiNumberEditing(card, taxi);
+            });
+        }
+        
+        // Función para configurar la edición del número de taxi
+        function setupTaxiNumberEditing(card, taxi) {
+            const taxiNumberElement = card.querySelector('.taxi-number');
+            const editContainer = card.querySelector('.edit-number-container');
+            const editInput = card.querySelector('.edit-number-input');
+            const saveBtn = card.querySelector('.save-number-btn');
+            const cancelBtn = card.querySelector('.cancel-number-btn');
+            
+            // Mostrar el campo de edición al hacer clic en el número
+            taxiNumberElement.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evitar que se active el panel de detalles
+                taxiNumberElement.style.display = 'none';
+                editContainer.style.display = 'flex';
+                editInput.focus();
+            });
+            
+            // Guardar el número editado
+            saveBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evitar que se active el panel de detalles
+                
+                const newValue = editInput.value.trim();
+                
+                // Validar que sea un número de hasta 4 dígitos
+                if (/^\d{1,4}$/.test(newValue)) {
+                    // Actualizar el número en la tarjeta y en el objeto de datos
+                    const newNumber = 'TX' + newValue.padStart(4 - newValue.length, '0');
+                    taxiNumberElement.textContent = newNumber;
+                    taxi.number = newNumber;
+                    taxi.id = newNumber; // También actualizar el ID para mantener consistencia
+                    
+                    // Ocultar el campo de edición
+                    taxiNumberElement.style.display = 'block';
+                    editContainer.style.display = 'none';
+                    } else {
+                    // Mostrar mensaje de error si no es válido
+                    alert('Por favor, ingrese un número de hasta 4 dígitos');
+                }
+            });
+            
+            // Cancelar la edición
+            cancelBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evitar que se active el panel de detalles
+                
+                // Restaurar el valor original
+                editInput.value = taxi.number.replace(/\D/g, '');
+                
+                // Ocultar el campo de edición
+                taxiNumberElement.style.display = 'block';
+                editContainer.style.display = 'none';
+            });
+            
+            // También permitir guardar al presionar Enter
+            editInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    saveBtn.click();
+                } else if (e.key === 'Escape') {
+                    cancelBtn.click();
+                    }
+                });
+            }
+            
+        // Configurar eventos globales
+        function setupGlobalEvents() {
+            // Configurar búsqueda de taxis
+            const searchInput = document.querySelector('.search-bar input');
+            const searchButton = document.querySelector('.search-bar button');
+            
+            if (searchInput && searchButton) {
+                searchButton.addEventListener('click', () => {
+                    const searchTerm = searchInput.value.trim().toLowerCase();
+                    buscarTaxis(searchTerm);
+                });
+                
+                searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                        const searchTerm = searchInput.value.trim().toLowerCase();
+                        buscarTaxis(searchTerm);
+                    }
+                });
+            }
+            
+            // Botón para agregar nuevo taxi
+            const addButton = document.querySelector('.add-card-button');
+            if (addButton) {
+                addButton.addEventListener('click', () => {
+                    // Implementar lógica para agregar nuevo taxi
+                    alert('Función para agregar nuevo taxi: por implementar');
+                });
+            }
+        }
+        
+        // Función para buscar taxis
+        function buscarTaxis(termino) {
+            const taxiCards = document.querySelectorAll('.taxi-card');
+            
+            if (termino === '') {
+                // Mostrar todos si no hay término de búsqueda
+                taxiCards.forEach(card => {
+                    card.style.display = '';
+                });
+                return;
+            }
+            
+            // Filtrar tarjetas según el término de búsqueda
+            taxiCards.forEach(card => {
+                const taxiNumber = card.querySelector('.taxi-number').textContent.toLowerCase();
+                
+                if (taxiNumber.includes(termino)) {
+                    card.style.display = '';
+                        } else {
+                    card.style.display = 'none';
+                        }
+                    });
+        }
+
+        // Asegurar que el módulo TaxiManager se inicialice correctamente
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar módulos
+            if (window.TaxiManager && typeof window.TaxiManager.init === 'function') {
+                window.TaxiManager.init();
+            }
+            
+            // Asegurarse de que el botón de agregar taxi funcione
+            const addTaxiButton = document.querySelector('.add-taxi-button');
+            if (addTaxiButton) {
+                addTaxiButton.addEventListener('click', function() {
+                    if (window.TaxiManager && typeof window.TaxiManager.addNewTaxi === 'function') {
+                        window.TaxiManager.addNewTaxi();
+                    } else {
+                        console.error('La función addNewTaxi no está disponible');
+                        alert('No se puede agregar un nuevo taxi en este momento');
+                    }
+                });
+            }
+
+            // Configurar botones de tarjetas admin
+            const expandSegurosButton = document.getElementById('expand-seguros');
+            if (expandSegurosButton) {
+                expandSegurosButton.addEventListener('click', function() {
+                    if (window.SegurosManager && typeof window.SegurosManager.openSegurosExpandedView === 'function') {
+                        window.SegurosManager.openSegurosExpandedView();
+                    }
+                });
+            }
+
+            const observacionesButton = document.getElementById('observaciones-button');
+            if (observacionesButton) {
+                observacionesButton.addEventListener('click', function() {
+                    if (window.ObservacionesManager && typeof window.ObservacionesManager.openObservacionesModal === 'function') {
+                        window.ObservacionesManager.openObservacionesModal();
+                    }
+                });
+            }
+
+            const rtoButton = document.getElementById('rto-button');
+            if (rtoButton) {
+                rtoButton.addEventListener('click', function() {
+                    if (window.RTOManager && typeof window.RTOManager.openRTOModal === 'function') {
+                        window.RTOManager.openRTOModal();
+                    }
+                });
+            }
+
+            const verAgendaButton = document.querySelector('.ver-agenda-button');
+            if (verAgendaButton) {
+                verAgendaButton.addEventListener('click', function() {
+                    if (window.AgendaManager && typeof window.AgendaManager.openAgendaModal === 'function') {
+                        window.AgendaManager.openAgendaModal();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
