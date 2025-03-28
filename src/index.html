@@ -50,13 +50,10 @@
             </div>
 
             <div class="maintenance-section">
-                <div class="maintenance-header">
-                    <h3>Mantenimientos</h3>
-                    <button class="add-maintenance-btn" id="addNewMaintenanceBtn">
-                        <i class="fas fa-plus"></i> Nuevo Mantenimiento
-                    </button>
+                <h3>Mantenimiento</h3>
+                <div class="maintenance-list">
+                    <!-- Los items de mantenimiento se agregarán dinámicamente -->
                 </div>
-                <div id="maintenanceList"></div>
             </div>
 
             <div class="action-buttons">
@@ -72,36 +69,39 @@
         </div>
     </div>
 
-    <!-- Modal de Mantenimiento -->
-    <div id="maintenanceModal" class="modal">
+    <!-- Modal de Programación de Mantenimiento -->
+    <div class="modal" id="maintenanceModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Programar Mantenimiento</h2>
+                <h3>Programar Mantenimiento</h3>
                 <button class="close-modal-btn">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="maintenanceType">Tipo de Mantenimiento:</label>
+                    <label>Tipo de Mantenimiento</label>
                     <select id="maintenanceType" class="form-control">
-                        <!-- Se llenará dinámicamente -->
+                        <option value="aceite">Aceite y Filtros</option>
+                        <option value="neumaticos">Neumáticos</option>
+                        <option value="distribucion">Distribución</option>
+                        <option value="bateria">Batería</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="maintenanceDate">Fecha del Último Servicio:</label>
-                    <input type="date" id="maintenanceDate" class="form-control" contenteditable="true">
+                    <label>Fecha</label>
+                    <input type="date" id="maintenanceDate" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="currentKm">Kilometraje Actual:</label>
-                    <input type="number" id="currentKm" class="form-control" min="0" contenteditable="true">
+                    <label>Kilometraje Actual</label>
+                    <input type="number" id="currentKm" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="nextServiceKm">Próximo Servicio (km):</label>
-                    <input type="number" id="nextServiceKm" class="form-control" min="1" contenteditable="true">
+                    <label>Próximo Servicio (km)</label>
+                    <input type="number" id="nextServiceKm" class="form-control">
                 </div>
-                <div class="modal-buttons">
-                    <button id="cancelMaintenance" class="btn btn-secondary">Cancelar</button>
-                    <button id="saveMaintenance" class="btn btn-primary">Guardar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancelMaintenance">Cancelar</button>
+                <button class="primary-btn" id="saveMaintenance">Guardar</button>
             </div>
         </div>
     </div>
