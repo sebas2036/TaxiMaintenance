@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.id = taxi.id;
         
         const proximoServicio = flota.obtenerProximoServicio(taxi.id);
-        
+
         card.innerHTML = `
             <div class="taxi-header">
                 <h3>${taxi.id}</h3>
                 <span class="status-badge status-${taxi.status}">${taxi.status}</span>
             </div>
-            <div class="taxi-info">
+                <div class="taxi-info">
                 <p><strong>Modelo:</strong> ${taxi.modelo}</p>
                 <p><strong>Kilómetros:</strong> ${taxi.kmActual.toLocaleString()} km</p>
                 ${proximoServicio ? `
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Días restantes:</strong> ${proximoServicio.diasRestantes}</p>
                     <p><strong>Prioridad:</strong> ${proximoServicio.prioridad}</p>
                 ` : ''}
-            </div>
+                    </div>
             <div class="taxi-actions">
                 <button class="btn-edit" onclick="showTaxiDetails('${taxi.id}')">
                     <i class="fas fa-edit"></i> Editar
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </button>
             </div>
         `;
-        
+
         return card;
     }
 
@@ -93,21 +93,23 @@ document.addEventListener('DOMContentLoaded', function() {
         // Limpiar y actualizar lista de mantenimientos
         const maintenanceList = Object.entries(taxi.maintenance).map(([key, maint]) => {
             const interval = flota.maintenanceIntervals[key];
-            const kmRestantes = interval.kilometros - maint.kmSinceLastService;
+            const kmDesdeUltimoServicio = taxi.kmActual - maint.kmUltimoServicio;
+            const proximoServicioKm = interval.kilometros;
+            const kmRestantes = proximoServicioKm - kmDesdeUltimoServicio;
             const diasRestantes = Math.ceil(kmRestantes / flota.KM_PER_DAY);
-            const progress = (maint.kmSinceLastService / interval.kilometros) * 100;
+            const progress = (kmDesdeUltimoServicio / proximoServicioKm) * 100;
             
             return `
                 <div class="maintenance-item" data-maintenance-key="${key}">
                     <div class="maintenance-header">
                         <div class="maintenance-title">${maint.title}</div>
                         <div class="maintenance-date">
-                            Último servicio: ${maint.lastDate}
+                            Último: ${maint.lastDate}
                         </div>
                     </div>
                     <div class="maintenance-km">
                         <strong>Kilómetros desde último servicio:</strong> 
-                        ${maint.kmSinceLastService.toLocaleString()} km
+                        ${kmDesdeUltimoServicio.toLocaleString()} km
                         <small>(Calculado: ${flota.KM_PER_DAY} km/día)</small>
                     </div>
                     <div class="progress-bar">
@@ -117,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="next-service">
                         <i class="fas fa-wrench"></i>
                         <strong>Próximo servicio:</strong> 
-                        <span class="next-service-km">${interval.kilometros.toLocaleString()}</span> km
+                        <span class="next-service-km">${proximoServicioKm.toLocaleString()}</span> km
                         <br>
                         <strong>Faltan:</strong> 
                         <span class="km-restantes">${kmRestantes.toLocaleString()}</span> km
@@ -128,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }).join('');
-        
+
         document.getElementById('maintenanceList').innerHTML = maintenanceList;
         
         // Mostrar el panel
@@ -203,13 +205,69 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función de búsqueda
     function searchTaxis() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.taxi-card');
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const maintenanceType = document.getElementById('maintenanceType').value;
+        const statusFilter = document.getElementById('statusFilter').value;
         
-        cards.forEach(card => {
-            const taxiNumber = card.querySelector('h3').textContent.toLowerCase();
-            card.style.display = searchTerm === '' || taxiNumber.includes(searchTerm) ? 'block' : 'none';
+        const results = [];
+        
+        Object.values(flota.vehiculos).forEach(taxi => {
+            if (taxi.id.toLowerCase().includes(searchTerm) || 
+                taxi.modelo.toLowerCase().includes(searchTerm)) {
+                
+                Object.entries(taxi.maintenance).forEach(([key, maint]) => {
+                    if (!maintenanceType || key === maintenanceType) {
+                        if (!statusFilter || maint.type === statusFilter) {
+                            results.push({
+                                taxiId: taxi.id,
+                                taxiModel: taxi.modelo,
+                                maintenanceType: key,
+                                maintenance: maint
+                            });
+                        }
+                    }
+                });
+            }
         });
+        
+        displaySearchResults(results);
+    }
+
+    function displaySearchResults(results) {
+        const searchResults = document.getElementById('searchResults');
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p>No se encontraron resultados</p>';
+            return;
+        }
+        
+        searchResults.innerHTML = results.map(result => {
+            const interval = flota.maintenanceIntervals[result.maintenanceType];
+            const kmDesdeUltimoServicio = result.maintenance.kmSinceLastService;
+            const proximoServicioKm = interval.kilometros;
+            const kmRestantes = proximoServicioKm - kmDesdeUltimoServicio;
+            const diasRestantes = Math.ceil(kmRestantes / flota.KM_PER_DAY);
+            
+            return `
+                <div class="search-result-item">
+                    <h4>Taxi ${result.taxiId} - ${result.taxiModel}</h4>
+                    <div class="maintenance-info">
+                        <p><strong>Mantenimiento:</strong> ${result.maintenance.title}</p>
+                        <p><strong>Último servicio:</strong> ${result.maintenance.lastDate}</p>
+                        <p><strong>Kilómetros desde último servicio:</strong> ${kmDesdeUltimoServicio.toLocaleString()} km</p>
+                        <p><strong>Próximo servicio:</strong> ${proximoServicioKm.toLocaleString()} km</p>
+                        <p><strong>Faltan:</strong> ${kmRestantes.toLocaleString()} km</p>
+                        <p><strong>Días restantes:</strong> ${diasRestantes} días</p>
+                    </div>
+                    <span class="status-badge status-${result.maintenance.type}">
+                        ${result.maintenance.type === 'ok' ? 'OK' : 
+                          result.maintenance.type === 'warning' ? 'Advertencia' : 'Urgente'}
+                    </span>
+                    <button class="btn-edit" onclick="showTaxiDetails('${result.taxiId}')">
+                        <i class="fas fa-edit"></i> Ver detalles
+                    </button>
+                </div>
+            `;
+        }).join('');
     }
 
     // Función para cerrar el panel de detalles
@@ -257,6 +315,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addTaxiBtn.addEventListener('click', addNewTaxi);
+
+    // Agregar event listeners para los filtros
+    document.getElementById('maintenanceType').addEventListener('change', searchTaxis);
+    document.getElementById('statusFilter').addEventListener('change', searchTaxis);
 
     // Inicialización
     Object.values(flota.vehiculos).forEach(taxi => {

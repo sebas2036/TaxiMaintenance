@@ -5,7 +5,7 @@ class Flota {
             'aceite': {
                 title: 'Aceite y Filtros',
                 dias: 180,
-                kilometros: 12000
+                kilometros: 5000
             },
             'neumaticos': {
                 title: 'Neumáticos',
@@ -47,8 +47,7 @@ class Flota {
             this.vehiculos[id].maintenance[key] = {
                 title: this.maintenanceIntervals[key].title,
                 lastDate: currentDate,
-                kmSinceLastService: 0,
-                nextServiceKm: this.maintenanceIntervals[key].kilometros,
+                kmUltimoServicio: kmActual,
                 type: 'ok',
                 history: []
             };
@@ -78,8 +77,7 @@ class Flota {
 
         // Actualizar último servicio
         mantenimiento.lastDate = fecha;
-        mantenimiento.kmSinceLastService = 0;
-        mantenimiento.nextServiceKm = this.maintenanceIntervals[tipoServicio].kilometros;
+        mantenimiento.kmUltimoServicio = kmServicio;
 
         this.actualizarEstadoVehiculo(id);
         this.guardarDatos();
@@ -90,46 +88,30 @@ class Flota {
         if (!vehiculo) return;
 
         let worstStatus = 'ok';
-        let totalKm = 0;
 
         Object.entries(vehiculo.maintenance).forEach(([key, maint]) => {
             const interval = this.maintenanceIntervals[key];
             if (!interval) return;
 
             // Calcular kilómetros desde el último servicio
-            const kmSinceLastService = this.calcularKmDesdeUltimoServicio(maint.lastDate);
-            maint.kmSinceLastService = kmSinceLastService;
-
-            // Calcular progreso
-            const progress = (kmSinceLastService / interval.kilometros) * 100;
-            maint.nextServiceKm = interval.kilometros;
+            const kmDesdeUltimoServicio = vehiculo.kmActual - maint.kmUltimoServicio;
+            const proximoServicioKm = interval.kilometros;
+            const kmRestantes = proximoServicioKm - kmDesdeUltimoServicio;
+            const diasRestantes = Math.ceil(kmRestantes / this.KM_PER_DAY);
 
             // Determinar estado
-            if (progress >= 100) {
+            if (kmDesdeUltimoServicio >= proximoServicioKm) {
                 maint.type = 'danger';
                 worstStatus = 'danger';
-            } else if (progress >= 90) {
+            } else if (kmDesdeUltimoServicio >= proximoServicioKm * 0.9) {
                 maint.type = 'warning';
                 if (worstStatus !== 'danger') worstStatus = 'warning';
             } else {
                 maint.type = 'ok';
             }
-
-            totalKm += kmSinceLastService;
         });
 
         vehiculo.status = worstStatus;
-        vehiculo.kmPromedio = totalKm / Object.keys(vehiculo.maintenance).length;
-    }
-
-    calcularKmDesdeUltimoServicio(fecha) {
-        if (!fecha || fecha === 'No registrado') return 0;
-        
-        const today = new Date();
-        const lastServiceDate = new Date(fecha.split('/').reverse().join('-'));
-        const daysDiff = Math.floor((today - lastServiceDate) / (1000 * 60 * 60 * 24));
-        
-        return daysDiff * this.KM_PER_DAY;
     }
 
     obtenerProximoServicio(id) {
@@ -147,7 +129,8 @@ class Flota {
             const interval = this.maintenanceIntervals[key];
             if (!interval) return;
 
-            const kmRestantes = interval.kilometros - maint.kmSinceLastService;
+            const kmDesdeUltimoServicio = vehiculo.kmActual - maint.kmUltimoServicio;
+            const kmRestantes = interval.kilometros - kmDesdeUltimoServicio;
             const diasRestantes = Math.ceil(kmRestantes / this.KM_PER_DAY);
 
             if (diasRestantes < proximoServicio.diasRestantes) {
