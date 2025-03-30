@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista GPS - TaxiMaintenance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        #map {
+            height: calc(100vh - 60px);
+            width: 100%;
+            position: relative;
+        }
+        .gps-header {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gps-controls {
+            display: flex;
+            gap: 1rem;
+        }
+        .gps-controls button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .gps-controls button:hover {
+            background: #0056b3;
+        }
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 80%;
+        }
+        .error-message h2 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .error-message p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        .error-message code {
+            display: block;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="gps-header">
+        <h1>Vista GPS</h1>
+        <div class="gps-controls">
+            <button id="refreshLocations">
+                <i class="fas fa-sync"></i>
+                Actualizar
+            </button>
+            <button id="backToMain">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </button>
+        </div>
+    </div>
+    <div id="map">
+        <div id="error-container" class="error-message" style="display: none;">
+            <h2><i class="fas fa-exclamation-triangle"></i> Error al cargar el mapa</h2>
+            <p>No se pudo cargar Google Maps correctamente. Esto puede deberse a:</p>
+            <ul style="text-align: left; margin-bottom: 1rem;">
+                <li>La clave de API de Google Maps no está configurada</li>
+                <li>La clave de API no es válida</li>
+                <li>Problemas de conexión a internet</li>
+            </ul>
+            <p>Para solucionar este problema:</p>
+            <ol style="text-align: left; margin-bottom: 1rem;">
+                <li>Obtén una clave de API válida en la <a href="https://console.cloud.google.com/google/maps-apis/overview" target="_blank">Consola de Google Cloud</a></li>
+                <li>Reemplaza "TU_API_KEY" en el código con tu clave de API</li>
+                <li>Asegúrate de que la clave tenga los permisos necesarios para Maps JavaScript API</li>
+            </ol>
+            <div id="error-details" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar errores
+        function showError(error) {
+            const errorContainer = document.getElementById('error-container');
+            const errorDetails = document.getElementById('error-details');
+            
+            if (error && error.message) {
+                errorDetails.innerHTML = `
+                    <p><strong>Detalles técnicos:</strong></p>
+                    <code>${error.message}</code>
+                `;
+            }
+            
+            errorContainer.style.display = 'block';
+            console.error('Error en Google Maps:', error);
+        }
+
+        // Función para inicializar el mapa
+        let map;
+        let markers = [];
+
+        function initMap() {
+            try {
+                if (!google || !google.maps) {
+                    throw new Error('Google Maps no se cargó correctamente');
+                }
+
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: -34.603722, lng: -58.381592 }, // Buenos Aires
+                    zoom: 12
+                });
+
+                // Si llegamos aquí, el mapa se cargó correctamente
+                document.getElementById('error-container').style.display = 'none';
+            } catch (error) {
+                showError(error);
+            }
+        }
+
+        // Función para actualizar las ubicaciones
+        async function updateLocations() {
+            try {
+                const response = await fetch('/api/taxis');
+                const taxis = await response.json();
+                
+                if (!map) {
+                    throw new Error('El mapa no está inicializado');
+                }
+
+                // Limpiar marcadores existentes
+                markers.forEach(marker => marker.setMap(null));
+                markers = [];
+
+                // Agregar nuevos marcadores
+                taxis.forEach(taxi => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: taxi.lat || -34.603722, lng: taxi.lng || -58.381592 },
+                        map: map,
+                        title: `Taxi ${taxi.id} - ${taxi.conductor}`,
+                        icon: {
+                            url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                        }
+                    });
+
+                    // Agregar ventana de información
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div>
+                                <h3>Taxi ${taxi.id}</h3>
+                                <p>Conductor: ${taxi.conductor}</p>
+                                <p>Estado: ${taxi.estado}</p>
+                                <p>Última actualización: ${new Date().toLocaleString()}</p>
+                            </div>
+                        `
+                    });
+
+                    marker.addListener('click', () => {
+                        infoWindow.open(map, marker);
+                    });
+
+                    markers.push(marker);
+                });
+            } catch (error) {
+                showError(error);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('refreshLocations').addEventListener('click', updateLocations);
+        document.getElementById('backToMain').addEventListener('click', () => {
+            window.location.href = '/';
+        });
+
+        // Cargar Google Maps con manejo de errores
+        function loadGoogleMaps() {
+            const script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap';
+            script.async = true;
+            script.defer = true;
+            script.onerror = (error) => {
+                showError(new Error('No se pudo cargar el script de Google Maps'));
+            };
+            document.head.appendChild(script);
+        }
+
+        // Inicializar cuando se carga la página
+        window.onload = loadGoogleMaps;
+    </script>
+</body>
+</html> 

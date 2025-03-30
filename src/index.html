@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiMaintenance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TaxiMaintenance</h1>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar taxi...">
+                    <button>🔍</button>
+                </div>
+                <div class="header-actions">
+                    <button class="gps-btn">
+                        <i class="fas fa-satellite"></i> GPS
+                    </button>
+                    <button class="gps-view-btn">
+                        <i class="fas fa-map"></i> Vista GPS
+                    </button>
+                    <button class="add-taxi-btn">
+                        <i class="fas fa-plus"></i> Agregar Taxi
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="taxi-grid" class="taxi-grid"></div>
+        </main>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="detail-panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Detalles del Taxi</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        
+        <div class="panel-content">
+            <div class="info-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Marca</label>
+                        <span class="taxi-brand editable">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Año</label>
+                        <span class="taxi-year editable">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Dominio</label>
+                        <span class="taxi-domain editable">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="maintenance-section">
+                <h3>Mantenimiento</h3>
+                <div class="maintenance-list">
+                    <!-- Los items de mantenimiento se agregarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="primary-btn" id="programMaintenance">
+                    <i class="fas fa-calendar-plus"></i>
+                    Programar Mantenimiento
+                </button>
+                <button class="secondary-btn" id="viewHistory">
+                    <i class="fas fa-history"></i>
+                    Ver Historial
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Programación de Mantenimiento -->
+    <div class="modal" id="maintenanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Programar Mantenimiento</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Mantenimiento</label>
+                    <select id="maintenanceType" class="form-control">
+                        <option value="aceite">Aceite y Filtros</option>
+                        <option value="neumaticos">Neumáticos</option>
+                        <option value="distribucion">Distribución</option>
+                        <option value="bateria">Batería</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="maintenanceDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Kilometraje Actual</label>
+                    <input type="number" id="currentKm" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Próximo Servicio (km)</label>
+                    <input type="number" id="nextServiceKm" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="cancelMaintenance">Cancelar</button>
+                <button class="primary-btn" id="saveMaintenance">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="newMaintenanceTypeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Tipo de Mantenimiento</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newMaintenanceTypeForm">
+                    <div class="form-group">
+                        <label for="newMaintenanceName">Nombre del Mantenimiento</label>
+                        <input type="text" id="newMaintenanceName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newMaintenanceKm">Kilómetros</label>
+                        <input type="number" id="newMaintenanceKm" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newMaintenanceDays">Días</label>
+                        <input type="number" id="newMaintenanceDays" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="secondary-btn" onclick="closeNewMaintenanceTypeModal()">Cancelar</button>
+                        <button type="submit" class="primary-btn">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configuración GPS -->
+    <div id="gpsConfigModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configuración GPS</h2>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <form id="gpsConfigForm">
+                <div class="form-group">
+                    <label for="gpsProvider">
+                        <i class="fas fa-satellite"></i>
+                        Proveedor GPS
+                    </label>
+                    <select id="gpsProvider" required>
+                        <option value="">Seleccione un proveedor</option>
+                        <option value="colsa">Colsa</option>
+                        <option value="other">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gpsUsername">
+                        <i class="fas fa-user"></i>
+                        Usuario Colsa
+                    </label>
+                    <input type="text" id="gpsUsername" placeholder="Ingrese su usuario de Colsa" required>
+                    <div class="field-hint">Usuario para acceder a la plataforma Colsa</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gpsPassword">
+                        <i class="fas fa-lock"></i>
+                        Contraseña Colsa
+                    </label>
+                    <input type="password" id="gpsPassword" placeholder="Ingrese su contraseña de Colsa" required>
+                    <div class="field-hint">Contraseña para acceder a la plataforma Colsa</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gpsApiKey">
+                        <i class="fas fa-key"></i>
+                        API Key
+                    </label>
+                    <input type="text" id="gpsApiKey" placeholder="Ingrese su API Key" required>
+                    <div class="field-hint">Clave de API para la integración con Colsa</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gpsUpdateInterval">
+                        <i class="fas fa-clock"></i>
+                        Intervalo de actualización
+                    </label>
+                    <input type="number" id="gpsUpdateInterval" min="10" max="3600" value="30" required>
+                    <div class="field-hint">Tiempo en segundos entre actualizaciones de datos GPS (10-3600)</div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="gpsEnabled">
+                        <i class="fas fa-power-off"></i>
+                        Activar seguimiento GPS
+                    </label>
+                    <div class="field-hint">Habilita el seguimiento GPS en tiempo real</div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        Guardar Configuración
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Iniciar Sesión en Colsa</h3>
+                <button class="close-modal-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Usuario</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="primary-btn">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/flota.js"></script>
+    <script src="js/colsa_integration.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

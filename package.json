@@ -1,0 +1,17 @@
+{
+  "name": "mantenimiento-flota-taxi",
+  "version": "1.0.0",
+  "description": "Sistema web para la gestión y seguimiento del mantenimiento de una flota de taxis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "puppeteer": "^24.4.0",
+    "winston": "^3.17.0"
+  }
+}
